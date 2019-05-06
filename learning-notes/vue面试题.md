@@ -15,3 +15,5 @@ keep-alive v-once
 v-cloak
 
 vue-cli  polyfill，跨域等等
+
+angular，vue，react的区别
