@@ -33,4 +33,14 @@ node event loop 阶段：
 一旦 轮询 队列为空，事件循环将检查 _已达到时间阈值的计时器_。如果一个或多个计时器已准备就绪，则事件循环将绕回计时器阶段以执行这些计时器的回调。
 
 
+### process.nextTick() 对比 setImmediate()
+就用户而言我们有两个类似的调用，但它们的名称令人费解。
+
+- process.nextTick() 在同一个阶段立即执行。
+- setImmediate() 在以下迭代或 ‘tick’ 上触发事件循环。
+
+node官方建议开发人员在所有情况下都使用 setImmediate()，因为它更容易被推理
+
+process.nextTick（）在技术上并不是事件循环的一部分。 相反，nextTickQueue将在当前操作完成后处理，而不管事件循环的当前阶段如何。
+
 参考：https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
