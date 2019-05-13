@@ -31,3 +31,6 @@ node event loop 阶段：
 > - 如果脚本 尚未 按 setImmediate()排定，则事件循环将等待回调添加到队列中，然后立即执行。
 
 一旦 轮询 队列为空，事件循环将检查 _已达到时间阈值的计时器_。如果一个或多个计时器已准备就绪，则事件循环将绕回计时器阶段以执行这些计时器的回调。
+
+
+参考：https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
