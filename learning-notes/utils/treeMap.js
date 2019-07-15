@@ -32,7 +32,7 @@ export function getAllNode({tree, childrenKey = "children"}) {
   tree.forEach(d => {
     nodeList.push(d);
     if (d[childrenKey] && d[childrenKey].length > 0) {
-      nodeList = nodeList.concat(getAllNode(d[childrenKey]));
+      nodeList = nodeList.concat(getAllNode({tree: d[childrenKey]}));
     }
   });
 
@@ -47,7 +47,7 @@ export function getAllNode({tree, childrenKey = "children"}) {
  * @param {Any} parentVal 根节点的父
  */
 export function getChildrenKey({tree, key, parentKey, parentsVals, childrenKey = "children"}) {
-  let nodeList = getAllNode(tree), val = [];
+  let nodeList = getAllNode({tree}), val = [];
   nodeList.forEach(node => {
     if (parentsVals.includes(node[key])) {
       if (node[childrenKey] && node[childrenKey].length) {
