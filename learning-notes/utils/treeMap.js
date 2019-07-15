@@ -43,10 +43,9 @@ export function getAllNode({tree, childrenKey = "children"}) {
  * 获取给定父节点的儿子节点，如果没有儿子，返回自身
  * @param {Array} tree 原始数据，树形
  * @param {String} key 索引键
- * @param {String} parentKey 父索引
  * @param {Any} parentVal 根节点的父
  */
-export function getChildrenKey({tree, key, parentKey, parentsVals, childrenKey = "children"}) {
+export function getChildrenKey({tree, key, parentsVals, childrenKey = "children"}) {
   let nodeList = getAllNode({tree}), val = [];
   nodeList.forEach(node => {
     if (parentsVals.includes(node[key])) {
@@ -65,12 +64,36 @@ export function getChildrenKey({tree, key, parentKey, parentsVals, childrenKey =
  * 获取所有子节点
  */
 export function getLeafNodes({tree, childrenKey = "children"}) {
-  //todo
+  let leafs = [];
+  tree.forEach(node => {
+    if (!node[childrenKey] || node[childrenKey].length === 0) {
+      leafs.push(node);
+    } else {
+      leafs = leafs.concat(getLeafNodes({tree: node[childrenKey]}));
+    }
+  })
+
+  return leafs;
 }
 
 /**
  * 获取指定层级的所有节点，从0开始
+ * @param {Array} tree 原始数据，树形
+ * @param {Number} level 层级，从0开始
  */
 export function getNodesByLevel({tree, level, childrenKey = "children"}) {
-  //todo
+  if (!level || level === 0) {
+    return tree;
+  }
+  let nodes = [];
+  tree.forEach(node => {
+    if (node[childrenKey] && node[childrenKey].length > 0) {
+      nodes = nodes.concat(getNodesByLevel({
+        tree: node[childrenKey],
+        level: level - 1,
+      }));
+    }
+  })
+  
+  return nodes;
 }
