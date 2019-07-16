@@ -1,3 +1,5 @@
+//参考： http://www.ruanyifeng.com/blog/2009/09/find_element_s_position_using_javascript.html
+
 //网页元素相对body位置
 function getElementLeft(element){
 　　　　var actualLeft = element.offsetLeft;
@@ -71,3 +73,5 @@ function getElementLeft(element){
 　　var X= this.getBoundingClientRect().left+document.documentElement.scrollLeft;
 
 　　var Y =this.getBoundingClientRect().top+document.documentElement.scrollTop;
+
+
