@@ -14,3 +14,6 @@
 - 清理无效的远程追踪分支
   查看哪些分支会被删除：git remote prune origin --dry-run
   删除：git remote prune origin
+
+- 查看git历史：
+  git log --pretty="%h - %ad - %s" --author=zhangyujie --since="2019-01-01"
