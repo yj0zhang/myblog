@@ -18,6 +18,96 @@ add(1, 2)           // 3
 curryingAdd(1)(2)   // 3
 ```
 
+### 来列一列Currying有哪些好处呢？
+1、参数复用
+```js
+// 正常正则验证字符串 reg.test(txt)
+
+// 函数封装后
+function check(reg, txt) {
+    return reg.test(txt)
+}
+
+check(/\d+/g, 'test')       //false
+check(/[a-z]+/g, 'test')    //true
+
+// Currying后
+function curryingCheck(reg) {
+    return function(txt) {
+        return reg.test(txt)
+    }
+}
+
+var hasNumber = curryingCheck(/\d+/g)
+var hasLetter = curryingCheck(/[a-z]+/g)
+
+hasNumber('test1')      // true
+hasNumber('testtest')   // false
+hasLetter('21212')      // false
+```
+
+2、提前确认
+```js
+var on = function(element, event, handler) {
+    if (document.addEventListener) {
+        if (element && event && handler) {
+            element.addEventListener(event, handler, false);
+        }
+    } else {
+        if (element && event && handler) {
+            element.attachEvent('on' + event, handler);
+        }
+    }
+}
+
+var on = (function() {
+    if (document.addEventListener) {
+        return function(element, event, handler) {
+            if (element && event && handler) {
+                element.addEventListener(event, handler, false);
+            }
+        };
+    } else {
+        return function(element, event, handler) {
+            if (element && event && handler) {
+                element.attachEvent('on' + event, handler);
+            }
+        };
+    }
+})();
+
+//换一种写法可能比较好理解一点，上面就是把isSupport这个参数给先确定下来了
+var on = function(isSupport, element, event, handler) {
+    isSupport = isSupport || document.addEventListener;
+    if (isSupport) {
+        return element.addEventListener(event, handler, false);
+    } else {
+        return element.attachEvent('on' + event, handler);
+    }
+}
+```
+
+3、延迟运行
+```js
+Function.prototype.bind = function (context) {
+    var _this = this
+    var args = Array.prototype.slice.call(arguments, 1)
+ 
+    return function() {
+        return _this.apply(context, args)
+    }
+}
+```
+
+### curry的一些性能问题你只要知道下面四点就差不多了：
+
+* 存取arguments对象通常要比存取命名参数要慢一点
+* 一些老版本的浏览器在arguments.length的实现上是相当慢的
+* 使用fn.apply( … ) 和 fn.call( … )通常比直接调用fn( … ) 稍微慢点
+* 创建大量嵌套作用域和闭包函数会带来花销，无论是在内存还是速度上
+
+其实在大部分应用中，主要的性能瓶颈是在操作DOM节点上，这js的性能损耗基本是可以忽略不计的，所以curry是可以直接放心的使用。
+
 经典面试题：
 // 实现一个add方法，使计算结果能够满足如下预期：
 add(1)(2)(3) = 6;
