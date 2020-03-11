@@ -19,3 +19,8 @@
   git log --pretty="%h - %ad - %s" --author=zhangyujie --since="2019-01-01"
   
   参考：https://www.jianshu.com/p/15838b8b44c0
+
+- 把某次或某几次commit应用到其他分支（a）
+  切换到a分支，执行 git cherry-pick commitId
+ 
+ - git rebase https://mp.weixin.qq.com/s/Y-imESQiYRCZXJd_mkkoZw
