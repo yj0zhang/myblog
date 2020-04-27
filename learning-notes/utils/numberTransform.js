@@ -40,3 +40,18 @@ console.log(transformNumber(3.4, 4, 2)) //3.4
 console.log(transformNumber(31.4, 4, 2)) //31.4
 console.log(transformNumber(3155.488, 4, 2)) //3155.49
 console.log(transformNumber(31554.4, 4, 2)) //3.16万
+console.log(transformNumber(3155433.4, 4, 2)) //3.16百万
+
+function transformNumberV2(number, interDigit, decimalDigit) {
+  const result = transformNumber(number, interDigit, decimalDigit + 4)
+
+  const unit = result.substr(-1)
+  const num = parseFloat(result);
+  const pow =  {"十": 1, "百": 2, "千": 3}
+  const secondaryPower = parseInt(pow[result.substr(-2, 1)]) || 0
+ 
+  return (num * Math.pow(10, secondaryPower)).toFixed(decimalDigit) + unit
+}
+
+console.log(transformNumberV2(3155433.4, 4, 2)) //315.54万
+transformNumberV2(31554333000.4, 4, 2) //"315.54亿"
