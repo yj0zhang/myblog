@@ -26,22 +26,17 @@ function transformNumber(number, interDigit, decimalDigit) {
     return integer + getDecimal(decimal, decimalDigit)
   } else {
     const unit = ["", "十", "百", "千", "万", "十万", "百万", "千万", "亿", "十亿", "百亿", "千亿"]
-    const fUnit = unit[numberInterDigit - interDigit]
+    const fUnit = unit[numberInterDigit - 1]
     if (typeof fUnit !== "string") {
       throw Error(`${number} is too large`)
     }
-    const remainNum = integer.toString().substr(interDigit) + decimal
-    return integer.toString().substr(0, interDigit) + getDecimal(remainNum, decimalDigit) + fUnit
+    const remainNum = integer.toString().substr(1) + decimal
+    return decimalDigit > 0 ? integer.toString().substr(0, 1) + getDecimal(remainNum, decimalDigit) + fUnit :
+      Math.round(integer.toString().substr(0, 1) + getDecimal(remainNum, 2)) + fUnit
   }
 }
 
-console.log(transformNumber(3.4, 1, 2)) //3.4
-console.log(transformNumber(31.4, 2, 2)) //31.4
-console.log(transformNumber(311.4, 2, 2)) //31.14十
-console.log(transformNumber(3111.4, 2, 2)) //31.11百
-console.log(transformNumber(31111.4, 2, 2)) //31.11千
-console.log(transformNumber(311111.4, 2, 2)) //31.11万
-console.log(transformNumber(3111111.4, 2, 2)) //31.11十万
-console.log(transformNumber(31111111.4, 2, 2)) //31.11百万
-console.log(transformNumber(311111111.4, 2, 2)) //31.11千万
-console.log(transformNumber(315555111.4, 2, 2)) //31.56千万
+console.log(transformNumber(3.4, 4, 2)) //3.4
+console.log(transformNumber(31.4, 4, 2)) //31.4
+console.log(transformNumber(3155.488, 4, 2)) //3155.49
+console.log(transformNumber(31554.4, 4, 2)) //3.16万
