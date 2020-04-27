@@ -20,9 +20,6 @@ function transformNumber(number, interDigit, decimalDigit) {
   interDigit = interDigit > 0 ? interDigit : 1
   const integer = Math.floor(number)
   const numberInterDigit = getDigit(integer)
-  if (numberInterDigit < interDigit) {
-    throw Error(`interDigit ${interDigit} must be less or equal than digit of number ${number}`)
-  }
   const decimal = number.toString().split(".")[1] || ""
  
   if (numberInterDigit <= interDigit) {
@@ -37,7 +34,6 @@ function transformNumber(number, interDigit, decimalDigit) {
     return integer.toString().substr(0, interDigit) + getDecimal(remainNum, decimalDigit) + fUnit
   }
 }
-
 
 console.log(transformNumber(3.4, 1, 2)) //3.4
 console.log(transformNumber(31.4, 2, 2)) //31.4
