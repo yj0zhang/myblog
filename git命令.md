@@ -14,3 +14,13 @@
 - 清理无效的远程追踪分支
   查看哪些分支会被删除：git remote prune origin --dry-run
   删除：git remote prune origin
+
+- 查看git历史：
+  git log --pretty="%h - %ad - %s" --author=zhangyujie --since="2019-01-01"
+  
+  参考：https://www.jianshu.com/p/15838b8b44c0
+
+- 把某次或某几次commit应用到其他分支（a）
+  切换到a分支，执行 git cherry-pick commitId
+ 
+ - git rebase https://mp.weixin.qq.com/s/Y-imESQiYRCZXJd_mkkoZw
