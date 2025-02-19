@@ -11,6 +11,14 @@ function isObject(value) {
     return Object.prototype.toString.call(value) === '[object Object]'
 }
 
+function resolveResult(value, resolve, reject) {
+    if(value instanceof MyPromise) {
+        value.then(resolve, reject)
+    } else {
+        resolve(value)
+    }
+}
+
 
 class MyPromise {
     constructor(fn) {
@@ -62,7 +70,7 @@ class MyPromise {
                         this._fulfilledCbs.push(data => {
                             queueMicrotask(() => {
                                 const v = fulfilledCb(data)
-                                resolve(v);
+                                resolveResult(v, resolve, reject);
                             })
                         })
                     } catch (error) {
@@ -72,7 +80,7 @@ class MyPromise {
                         this._rejectedCbs.push(reason => {
                             queueMicrotask(() => {
                                 const r = rejectedCb(reason)
-                                resolve(r);
+                                resolveResult(r, resolve, reject);
                             })
                         })
                     } catch (error) {
@@ -83,7 +91,7 @@ class MyPromise {
                     queueMicrotask(() => {
                         try {
                             const v = fulfilledCb(this._value);
-                            resolve(v)
+                            resolveResult(v, resolve, reject)
                         } catch (error) {
                             reject(error)
                         }
@@ -93,7 +101,7 @@ class MyPromise {
                     queueMicrotask(() => {
                         try {
                             const r = rejectedCb(this._reason);
-                            resolve(r);
+                            resolveResult(r, resolve, reject);
                         } catch (error) {
                             reject(error)
                         }
@@ -129,17 +137,19 @@ class MyPromise {
 //     console.log('reject', reason)
 // })
 
-const p = new MyPromise((resolve) => {
+const p = new MyPromise((resolve, reject) => {
     // setTimeout(() => {
     //     resolve(1)
     // }, 1000);
-    resolve(1);
+    reject(1);
 })
 p.then(data => {
     console.log('resolve data1',data)
-    return 2
+    // return 2
+    return MyPromise.reject(2)
 }, reason => {
     console.log('reject1', reason)
+    return MyPromise.resolve(2)
 }).then(data => {
     console.log('resolve data2',data)
 }, reason => {
