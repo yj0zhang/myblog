@@ -14,8 +14,10 @@
 
 ### 开发环境：
 
-    * 定义devServer(hot reload, proxy,)
+    * 定义devServer(hot reload, proxy)
+    * 设置devtool
 
 ### 生产环境
     * 静态文件生产hash后缀
     * 静态文件压缩
+    * 配置线上的静态资源服务器路径(output.publicPath)
