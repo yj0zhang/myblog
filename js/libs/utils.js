@@ -62,9 +62,30 @@ const utilsModule = ((Function) => {
 
     return typeof res === "object" ? res : _this;
   }
+  function isArray(val) {
+    return Object.prototype.toString.call(val) === "[object Array]";
+  }
+  function deepClone(origin) {
+    if (origin == undefined || typeof origin !== "object") {
+      return origin;
+    }
+    let target = isArray(origin) ? [] : {};
+    for (let k in origin) {
+      if (origin.hasOwnProperty(k)) {
+        if (typeof origin[k] === "object") {
+          target[k] = deepClone(origin[k]);
+        } else {
+          target[k] = origin[k];
+        }
+      }
+    }
+    return target;
+  }
 
   return {
     myNew,
+    isArray,
+    deepClone,
   };
 })(Function);
 
@@ -116,5 +137,14 @@ const utilsModule = ((Function) => {
 // console.log(newC);
 
 // console.log(new C(1, 2));
+
+const a = { a: 2, b: { c: [1, { f: 3 }] } };
+const ac = utilsModule.deepClone(a);
+ac.b.c[1].f = 888;
+console.log(a, ac);
+const b = [1, { a: 1, b: { c: [1, { d: 4 }] } }];
+const bb = utilsModule.deepClone(b);
+bb[1].b.c[1].d = 888;
+console.log(b, bb);
 
 export default utilsModule;
