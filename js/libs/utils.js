@@ -53,6 +53,19 @@ const utilsModule = ((Function) => {
     retFn.prototype = new _tempFn();
     return retFn;
   };
+
+  function myNew() {
+    var constructor = [].shift.call(arguments);
+    var _this = {};
+    _this.__proto__ = constructor.prototype;
+    var res = constructor.apply(_this, arguments);
+
+    return typeof res === "object" ? res : _this;
+  }
+
+  return {
+    myNew,
+  };
 })(Function);
 
 //ES6模块中自动使用严格模式
@@ -60,6 +73,7 @@ const utilsModule = ((Function) => {
 //   console.log(this, arguments);
 //   return [].slice.call(arguments);
 // }
+// test.prototype.name = "test";
 
 // test.myCall(
 //   {
@@ -78,23 +92,29 @@ const utilsModule = ((Function) => {
 //   ["z", [2]]
 // );
 
-// const bindTest = test.myBind(
-//   {
-//     a: 133,
-//     b: 2,
-//   },
-//   "bind",
-//   [1]
-// );
-// const b2 = test.myBind(
-//   {
-//     a: 44,
-//   },
-//   "bind",
-//   [1]
-// );
-//bind只执行一次
-// bindTest(["bindCall"], 2);
-// b2(["bindCall"], 2);
+// var t1 = test.myBind({ a: 1 }, "hello");
+// t1(" world");
+// // var newT1 = new t1(" world");
+// // console.log(newT1);
+
+// console.log("-----------------bind");
+// var t2 = test.bind({ a: 1 }, "hello");
+// t2(" world");
+// // var newT2 = new t2(" world");
+// // console.log(newT2);
+
+// function C(a, b) {
+//   this.a = a;
+//   this.b = b;
+// }
+// C.prototype.add = function () {
+//   return this.a + this.b;
+// };
+// const newC = utilsModule.myNew(C, 1, 2);
+// console.log(newC.add());
+
+// console.log(newC);
+
+// console.log(new C(1, 2));
 
 export default utilsModule;
