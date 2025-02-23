@@ -27,6 +27,7 @@ const utilsModule = ((Function) => {
     ctx = ctx ? Object(ctx) : window;
     ctx.__rawFn = this;
     const argsArr = arguments[1] ? arguments[1] : [];
+    // const res = ctx.__rawFn(...argsArr); //解构方式
     const args = [];
     for (let i = 0; i < argsArr.length; i++) {
       args.push(`argsArr[${i}]`);
