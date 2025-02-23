@@ -8,10 +8,17 @@ const utilsModule = ((Function) => {
     //把原始函数保存在ctx.rawFn上
     ctx.__rawFn = this;
     const args = [];
+    // for (let i = 1; i < arguments.length; i++) {
+    //   args.push(arguments[i]);
+    // }
+    // const res = ctx.__rawFn(...args);
+    //不使用解构
+
     for (let i = 1; i < arguments.length; i++) {
-      args.push(arguments[i]);
+      args.push(`arguments[${i}]`);
     }
-    const res = ctx.__rawFn(...args);
+    // console.log(args, `ctx.__rawFn(${args})`);
+    const res = eval(`ctx.__rawFn(${args})`);
     delete ctx.__rawFn;
     return res;
   };
