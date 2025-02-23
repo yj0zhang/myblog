@@ -1,16 +1,19 @@
-var obj1 = {
-  a: function () {
-    console.log(this);
-    function f() {
-      console.log(this); //执行obj1.a()是，这里输出的是window，f是独立的函数，不属于任何对象
-    }
-    f();
-  },
-};
-var obj2 = new Object({
-  a: function () {
-    console.log(this);
-  },
-});
+import utilsModule from "./libs/utils";
+/**
+ * call 第一个参数指定this，第二个参数开始，是函数的参数列表
+ *
+ */
+//ES6模块中自动使用严格模式
+function test() {
+  console.log(this, arguments);
+}
 
-console.log(obj1, obj2);
+test.myCall(
+  {
+    a: 1,
+    b: 2,
+  },
+  "z",
+  "s"
+);
+// test(1);
