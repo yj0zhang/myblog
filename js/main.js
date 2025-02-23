@@ -6,6 +6,7 @@ import utilsModule from "./libs/utils";
 //ES6模块中自动使用严格模式
 function test() {
   console.log(this, arguments);
+  return [].slice.call(arguments);
 }
 
 // test.myCall(
@@ -17,10 +18,29 @@ function test() {
 //   "s"
 // );
 
-test.myApply(
+// test.myApply(
+//   {
+//     a: 1,
+//     b: 2,
+//   },
+//   ["z", [2]]
+// );
+
+const bindTest = test.myBind(
   {
-    a: 1,
+    a: 133,
     b: 2,
   },
-  ["z", [2]]
+  "bind",
+  [1]
 );
+const b2 = test.myBind(
+  {
+    a: 44,
+  },
+  "bind",
+  [1]
+);
+//bind只执行一次
+// bindTest(["bindCall"], 2);
+b2(["bindCall"], 2);

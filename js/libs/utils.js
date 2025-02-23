@@ -20,6 +20,7 @@ const utilsModule = ((Function) => {
     // console.log(args, `ctx.__rawFn(${args})`);
     const res = eval(`ctx.__rawFn(${args})`);
     delete ctx.__rawFn;
+    console.log(res);
     return res;
   };
 
@@ -34,7 +35,31 @@ const utilsModule = ((Function) => {
     }
     const res = eval(`ctx.__rawFn(${args})`);
     delete ctx.__rawFn;
+    console.log(res);
     return res;
+  };
+
+  Function.prototype.myBindList = {};
+
+  Function.prototype.myBind = function (ctx) {
+    console.log(Function.prototype.myBindList[this]);
+    if (Function.prototype.myBindList[this]) {
+      return Function.prototype.myBindList[this];
+    }
+    ctx = ctx ? Object(ctx) : window;
+    const rawFn = this;
+    const args1 = [].slice.call(arguments, 1);
+    const retFn = function () {
+      const args = args1.concat([...arguments]);
+      ctx.__rawFn = rawFn;
+      const res = ctx.__rawFn(...args);
+      delete ctx.__rawFn;
+      //   console.log(res);
+      return res;
+    };
+
+    Function.prototype.myBindList[this] = retFn;
+    return retFn;
   };
 })(Function);
 
