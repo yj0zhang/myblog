@@ -8,12 +8,19 @@ function test() {
   console.log(this, arguments);
 }
 
-test.myCall(
+// test.myCall(
+//   {
+//     a: 1,
+//     b: 2,
+//   },
+//   "z",
+//   "s"
+// );
+
+test.myApply(
   {
     a: 1,
     b: 2,
   },
-  "z",
-  "s"
+  ["z", [2]]
 );
-// test(1);

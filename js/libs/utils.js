@@ -22,6 +22,19 @@ const utilsModule = ((Function) => {
     delete ctx.__rawFn;
     return res;
   };
+
+  Function.prototype.myApply = function (ctx) {
+    ctx = ctx ? Object(ctx) : window;
+    ctx.__rawFn = this;
+    const argsArr = arguments[1] ? arguments[1] : [];
+    const args = [];
+    for (let i = 0; i < argsArr.length; i++) {
+      args.push(`argsArr[${i}]`);
+    }
+    const res = eval(`ctx.__rawFn(${args})`);
+    delete ctx.__rawFn;
+    return res;
+  };
 })(Function);
 
 export default utilsModule;
