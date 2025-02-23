@@ -20,7 +20,6 @@ const utilsModule = ((Function) => {
     // console.log(args, `ctx.__rawFn(${args})`);
     const res = eval(`ctx.__rawFn(${args})`);
     delete ctx.__rawFn;
-    console.log(res);
     return res;
   };
 
@@ -35,30 +34,23 @@ const utilsModule = ((Function) => {
     }
     const res = eval(`ctx.__rawFn(${args})`);
     delete ctx.__rawFn;
-    console.log(res);
     return res;
   };
 
   Function.prototype.myBindList = {};
 
   Function.prototype.myBind = function (ctx) {
-    console.log(Function.prototype.myBindList[this]);
-    if (Function.prototype.myBindList[this]) {
-      return Function.prototype.myBindList[this];
-    }
-    ctx = ctx ? Object(ctx) : window;
     const rawFn = this;
-    const args1 = [].slice.call(arguments, 1);
+    const args = [].slice.call(arguments, 1);
     const retFn = function () {
-      const args = args1.concat([...arguments]);
-      ctx.__rawFn = rawFn;
-      const res = ctx.__rawFn(...args);
-      delete ctx.__rawFn;
-      //   console.log(res);
-      return res;
+      const newArgs = args.concat([...arguments]);
+      //如果用户使用new retFn实例化执行，this改为实例，否则是ctx
+      return rawFn.apply(this instanceof retFn ? new rawFn() : ctx, newArgs);
     };
-
-    Function.prototype.myBindList[this] = retFn;
+    //retFn继承原函数的原型(圣杯模式)
+    const _tempFn = function () {};
+    _tempFn.prototype = rawFn.prototype;
+    retFn.prototype = new _tempFn();
     return retFn;
   };
 })(Function);
