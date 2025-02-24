@@ -82,10 +82,33 @@ const utilsModule = ((Function) => {
     return target;
   }
 
+  function quickSort(list) {
+    if (!list || list.length < 2) {
+      return list;
+    }
+    let baseVal = list[0];
+    let leftList = [];
+    let rightList = [];
+    let equalList = [];
+    for (let i = 1; i < list.length; i++) {
+      if (list[i] < baseVal) {
+        leftList.push(list[i]);
+      } else if (list[i] === baseVal) {
+        equalList.push(list[i]);
+      } else {
+        rightList.push(list[i]);
+      }
+    }
+    leftList = quickSort(leftList);
+    rightList = quickSort(rightList);
+    return leftList.concat([...equalList, baseVal, ...rightList]);
+  }
+
   return {
     myNew,
     isArray,
     deepClone,
+    quickSort,
   };
 })(Function);
 
@@ -138,13 +161,15 @@ const utilsModule = ((Function) => {
 
 // console.log(new C(1, 2));
 
-const a = { a: 2, b: { c: [1, { f: 3 }] } };
-const ac = utilsModule.deepClone(a);
-ac.b.c[1].f = 888;
-console.log(a, ac);
-const b = [1, { a: 1, b: { c: [1, { d: 4 }] } }];
-const bb = utilsModule.deepClone(b);
-bb[1].b.c[1].d = 888;
-console.log(b, bb);
+// const a = { a: 2, b: { c: [1, { f: 3 }] } };
+// const ac = utilsModule.deepClone(a);
+// ac.b.c[1].f = 888;
+// console.log(a, ac);
+// const b = [1, { a: 1, b: { c: [1, { d: 4 }] } }];
+// const bb = utilsModule.deepClone(b);
+// bb[1].b.c[1].d = 888;
+// console.log(b, bb);
+
+console.log(utilsModule.quickSort([5, 3, 6, 3, 0, 72, 43, 3, 74, 4, 2]));
 
 export default utilsModule;
