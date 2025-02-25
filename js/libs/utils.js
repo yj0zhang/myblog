@@ -104,11 +104,42 @@ const utilsModule = ((Function) => {
     return leftList.concat([...equalList, baseVal, ...rightList]);
   }
 
+  //触发后，过了time后执行，但重复触发，以最后一次开始计时
+  function debounce(cb, time) {
+    let timer;
+    return function () {
+      clearTimeout(timer);
+      const ctx = this;
+      const args = arguments;
+      timer = setTimeout(() => {
+        cb.apply(ctx, args);
+      }, time);
+    };
+  }
+
+  //触发了就执行，但固定时间内，只执行一次
+  function throttle(cb, time) {
+    let timer;
+    return function () {
+      if (timer) {
+        return;
+      }
+      const ctx = this,
+        args = arguments;
+      cb.apply(ctx, args);
+      timer = setTimeout(() => {
+        timer = null;
+      }, time);
+    };
+  }
+
   return {
     myNew,
     isArray,
     deepClone,
     quickSort,
+    debounce,
+    throttle,
   };
 })(Function);
 
