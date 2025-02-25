@@ -65,18 +65,31 @@ const utilsModule = ((Function) => {
   function isArray(val) {
     return Object.prototype.toString.call(val) === "[object Array]";
   }
-  function deepClone(origin) {
+  /**
+   * 深度拷贝
+   * @param {any} origin 需要拷贝的对象
+   * @param {WeakMap} hash 已经拷贝过的对象，防止循环引用
+   * @returns
+   */
+  function deepClone(origin, hash = new WeakMap()) {
     if (origin == undefined || typeof origin !== "object") {
       return origin;
     }
+    if (origin instanceof Date) {
+      return new Date(origin);
+    }
+    if (origin instanceof RegExp) {
+      return new RegExp(origin);
+    }
+    if (hash.has(origin)) {
+      //如果已经拷贝过，直接返回
+      return hash.get(origin);
+    }
     let target = isArray(origin) ? [] : {};
+    hash.set(origin, target);
     for (let k in origin) {
       if (origin.hasOwnProperty(k)) {
-        if (typeof origin[k] === "object") {
-          target[k] = deepClone(origin[k]);
-        } else {
-          target[k] = origin[k];
-        }
+        target[k] = deepClone(origin[k], hash);
       }
     }
     return target;
