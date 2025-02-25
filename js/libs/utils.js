@@ -170,6 +170,6 @@ const utilsModule = ((Function) => {
 // bb[1].b.c[1].d = 888;
 // console.log(b, bb);
 
-console.log(utilsModule.quickSort([5, 3, 6, 3, 0, 72, 43, 3, 74, 4, 2]));
+// console.log(utilsModule.quickSort([5, 3, 6, 3, 0, 72, 43, 3, 74, 4, 2]));
 
 export default utilsModule;
