@@ -30,7 +30,7 @@ obj3.test = function () {
   var t1 = function () {
     console.log(this); // window
     var t2 = () => {
-      // 箭头函数的this，指向外层作用域的this（外层作用域不能是箭头函数）
+      // 箭头函数的this，指向外层(执行环境)作用域的this（外层作用域不能是箭头函数）
       // 如果t1是普通函数，这里的this指向window
       // 如果t1是箭头函数，这里的this指向obj
       console.log(this);
