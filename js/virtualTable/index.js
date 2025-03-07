@@ -149,23 +149,16 @@ const virtualTable = (function () {
       renderNewDom(columns, data);
       if (scrollDown) {
         virtualListInstance.reComputePosition(tableBodyDom, tableWrap);
+        tablePlaceholderDom.style.height =
+          virtualListInstance.contentHeight + "px";
       }
-      //   return new Promise((resolve) => {
-      //     if (scrollDown) {
-      //       requestAnimationFrame(() => {
-      //         virtualListInstance.reComputePosition(tableBodyDom, tableWrap);
-      //         resolve();
-      //       });
-      //     } else {
-      //       resolve();
-      //     }
-      //   });
     });
     //初始化时，渲染第一页
     renderNewDom(columns, data);
     tableWrap.appendChild(tableBodyDom);
     //根据实际高度，重新计算位置表
     virtualListInstance.reComputePosition(tableBodyDom, tableWrap);
+    tablePlaceholderDom.style.height = virtualListInstance.contentHeight + "px";
     return tableWrap;
   }
   function getReusedNodes() {
@@ -220,9 +213,9 @@ const virtualTable = (function () {
     // 设置tableBodyDom的translate属性
     const offsetTop =
       virtualListInstance.dataPositionInfo[virtualListInstance.startIdx].top;
-    tableBodyDom.style.transform = `translate3d(0, ${offsetTop}px, 0)`;
     const reusedNodes = getReusedNodes();
     renderUseExistNodes(reusedNodes, columns, data);
+    tableBodyDom.style.transform = `translate3d(0, ${offsetTop}px, 0)`;
   }
   return function (container, options) {
     if (!(container instanceof Element) || container.nodeType !== 1) {

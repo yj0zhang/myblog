@@ -1,4 +1,4 @@
-import { debounce, throttle, measureTextWidth } from "./utils";
+import { throttle } from "./utils";
 
 function initComputedDataPosition({ data, estimateTdHeight, tableWrap }) {
   const containerHeight = tableWrap.clientHeight;
@@ -47,16 +47,21 @@ class VirtualList {
   }
   reComputePosition(tableDom) {
     //重新计算相对于容器的位置
-    const wrapRect = this.tableWrap.getBoundingClientRect();
+    let dHeight = 0;
     tableDom.childNodes.forEach((child) => {
-      const idx = child.dataset["idx"];
+      const idx = Number(child.dataset["idx"]);
       if (idx >= 0) {
         const rect = child.getBoundingClientRect();
-        this.dataPositionInfo[idx].top = rect.y - wrapRect.y;
-        this.dataPositionInfo[idx].bottom = rect.bottom - wrapRect.y;
+        const oldHeight = this.dataPositionInfo[idx].height;
         this.dataPositionInfo[idx].height = rect.bottom - rect.y;
+        this.dataPositionInfo[idx].top =
+          idx === 0 ? 0 : this.dataPositionInfo[idx - 1].bottom;
+        this.dataPositionInfo[idx].bottom =
+          this.dataPositionInfo[idx].top + this.dataPositionInfo[idx].height;
+        dHeight += this.dataPositionInfo[idx].height - oldHeight;
       }
     });
+    this.contentHeight += dHeight;
   }
   static onDomScroll(instance, scrollCb) {
     const scrollHandler = throttle(() => {
@@ -106,9 +111,9 @@ class VirtualList {
         }
       }
       console.log(`startIdx: ${instance.startIdx}, endIdx: ${instance.endIdx}`);
-      instance.lastScrollTop = scrollTop;
       scrollCb && scrollCb(scrollTop > instance.lastScrollTop);
-    }, 100);
+      instance.lastScrollTop = scrollTop;
+    }, 200);
     instance.tableWrap.addEventListener("scroll", scrollHandler, false);
   }
   static setAttribute(domNode, info) {
