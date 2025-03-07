@@ -121,6 +121,16 @@ const virtualTable = (function () {
     tablePlaceholderDom.style.height = height + "px";
     return tablePlaceholderDom;
   }
+  function getPlaceholderHeight() {
+    let ret = virtualListInstance.contentHeight;
+    if (virtualListInstance.endIdx === virtualListInstance.data.length - 1) {
+      // todo bugfix 直接拖拽滚动条到最后，高度会过大，导致拖拽到最后有空白，暂时这样解决一下
+      const translateTop = getTranslateY();
+      const totalHeight = translateTop + tableBodyDom.clientHeight;
+      ret = totalHeight < ret ? totalHeight : ret;
+    }
+    return ret;
+  }
   function createTbody({
     container,
     columns,
@@ -149,8 +159,7 @@ const virtualTable = (function () {
       renderNewDom(columns, data);
       if (scrollDown) {
         virtualListInstance.reComputePosition(tableBodyDom, tableWrap);
-        tablePlaceholderDom.style.height =
-          virtualListInstance.contentHeight + "px";
+        tablePlaceholderDom.style.height = getPlaceholderHeight() + "px";
       }
     });
     //初始化时，渲染第一页
@@ -158,7 +167,7 @@ const virtualTable = (function () {
     tableWrap.appendChild(tableBodyDom);
     //根据实际高度，重新计算位置表
     virtualListInstance.reComputePosition(tableBodyDom, tableWrap);
-    tablePlaceholderDom.style.height = virtualListInstance.contentHeight + "px";
+    tablePlaceholderDom.style.height = getPlaceholderHeight() + "px";
     return tableWrap;
   }
   function getReusedNodes() {
@@ -208,11 +217,15 @@ const virtualTable = (function () {
     }
   }
 
+  function getTranslateY() {
+    return virtualListInstance.dataPositionInfo[virtualListInstance.startIdx]
+      .top;
+  }
+
   function renderNewDom(columns, data) {
     // 根据实例上的startIdx和endIdx渲染
     // 设置tableBodyDom的translate属性
-    const offsetTop =
-      virtualListInstance.dataPositionInfo[virtualListInstance.startIdx].top;
+    const offsetTop = getTranslateY();
     const reusedNodes = getReusedNodes();
     renderUseExistNodes(reusedNodes, columns, data);
     tableBodyDom.style.transform = `translate3d(0, ${offsetTop}px, 0)`;

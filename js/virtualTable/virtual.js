@@ -37,6 +37,7 @@ class VirtualList {
         estimateTdHeight,
         tableWrap,
       });
+    this.data = data;
     this.tableWrap = tableWrap;
     this.gap = gap;
     this.dataPositionInfo = dataPositionInfo;
