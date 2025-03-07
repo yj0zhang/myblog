@@ -1,22 +1,4 @@
 import VirtualList from "./virtual";
-// {
-//   width: "500px",
-//   data: Array.from({ length: 100000 }).map((_, i) => {
-//     return {
-//       id: i + 1,
-//       name: "姓名" + i,
-//       introduce: introduceList[Math.floor(Math.random() * 2)],
-//       // todo
-//       //   img
-//     };
-//   }),
-//   columns: [
-//     { type: "check" },
-//     { label: "编号", key: "id", width: 50 },
-//     { label: "姓名", key: "name", minWidth: 80 },
-//     { label: "自我介绍", key: "introduce" },
-//   ],
-// }
 const virtualTable = (function () {
   //表格体的最小高度
   const MIN_BODY_HEIGHT = 100;
@@ -82,18 +64,22 @@ const virtualTable = (function () {
   //设置没列的样式
   function createColGroup(columns, width) {
     const colgroup = document.createElement("colgroup");
+    let columnTotalWidth = 0;
     const defaultColWidth = getDefaultColWidth(columns, width);
     for (let i = 0; i < columns.length; i++) {
       const col = document.createElement("col");
+      columnTotalWidth += columns[i].width || defaultColWidth;
       col.style.width = (columns[i].width || defaultColWidth) + "px";
       colgroup.appendChild(col);
     }
-    return colgroup;
+    return { colgroup, columnTotalWidth };
   }
   function createTheader(columns, width) {
     const tableDom = document.createElement("table");
     //设置列属性
-    tableDom.appendChild(createColGroup(columns, width));
+    const { colgroup, columnTotalWidth } = createColGroup(columns, width);
+    tableDom.appendChild(colgroup);
+    tableDom.style.minWidth = columnTotalWidth + "px";
     //添加head
     const tHeader = document.createElement("thead");
     const tr = document.createElement("tr");
@@ -153,7 +139,8 @@ const virtualTable = (function () {
     tableBodyDom = document.createElement("table");
     //设置列属性
     tableBodyDom.className = "virtual-table-body";
-    tableBodyDom.appendChild(createColGroup(columns, width));
+    const { colgroup } = createColGroup(columns, width);
+    tableBodyDom.appendChild(colgroup);
     //用计算新的startIdx和endIdx，计算结束后渲染新的dom
     VirtualList.onDomScroll(virtualListInstance, (scrollDown) => {
       renderNewDom(columns, data);
