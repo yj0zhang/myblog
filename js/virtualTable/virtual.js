@@ -30,15 +30,15 @@ function initComputedDataPosition({ data, estimateTdHeight, tableWrap }) {
   };
 }
 class VirtualList {
-  constructor({ data, estimateTdHeight, tableWrap }) {
+  constructor({ data, estimateTdHeight, tableWrap, gap = 200 }) {
     const { startIdx, endIdx, dataPositionInfo, contentHeight } =
       initComputedDataPosition({
         data,
         estimateTdHeight,
         tableWrap,
       });
-    this.data = data;
     this.tableWrap = tableWrap;
+    this.gap = gap;
     this.dataPositionInfo = dataPositionInfo;
     this.contentHeight = contentHeight;
     this.startIdx = startIdx;
@@ -65,10 +65,11 @@ class VirtualList {
   }
   static onDomScroll(instance, scrollCb) {
     const scrollHandler = throttle(() => {
-      const gap = 200;
-      const scrollTop = instance.tableWrap.scrollTop - gap;
+      const scrollTop = instance.tableWrap.scrollTop - instance.gap;
       const wrapBottom =
-        instance.tableWrap.scrollTop + instance.tableWrap.offsetHeight + gap;
+        instance.tableWrap.scrollTop +
+        instance.tableWrap.offsetHeight +
+        instance.gap;
       //todo 滚动到底部时，请求下一页数据
       //根据scrollTop重新渲染
       let start = -1,
