@@ -1,24 +1,27 @@
+## cicd是什么
+在开发过程中，为了保证代码质量、简化合并和部署的流程，需要用到cicd。
+ci就是持续集成，在pr open和pr更新时，执行代码eslint和prettier检查，可以快速发现代码问题，保证代码质量；中间可以集成企业微信消息，通知执行结果
+cd就是持续部署，在pr被合并后，进行代码构建，docker镜像打包，打包成功后再打个版本tag，最后发布到服务器；中间可以集成企业微信消息，通知执行结果
+
+借助的工具是gitlab-runner和gitlab-ci
+
+ci阶段可以自动合并代码吗？
+cicd在发送企业微信的时候，如何获取commit-msg，让通知更加语义化？
+ci检查代码时，eslint和prettier是否可以支持增量检查？
+changelog ? 根据commit-msg生成
+Preview/Review App ?
+lint-staged ?
+husky(git hooks)
+
+
+cd是否可以和jenkins结合？
+docker-compose
+
+
 ## gitlab-runner
 cicd是持续集成和持续部署，使用gitlab-runner和gitlab-ci实现
 - gitlab-runner ?
 - gitlab-ci ?
-
-ci阶段
-- 代码eslint和prettier检查，不通过需要发企业微信消息（添加WIP标签），通过的话，移除WIP标签并发送企业微信消息，做code review，最后合并
-
-Preview App ?
-lint-staged ?
-husky(git hooks)
-
-ci阶段结束后，代码合并到测试分支，执行cd步骤
-cd阶段
-- build 前端构建
-- makeimage 制作docker镜像并上传到私有镜像服务器
-- deploy 部署，ssh登录部署服务器，执行部署脚本
-- 部署成功后，发送企业微信消息
-
-cd是否可以和jenkins结合？
-docker-compose
 
 
 <!-- stages:
