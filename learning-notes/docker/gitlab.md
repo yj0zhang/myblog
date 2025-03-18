@@ -25,15 +25,56 @@
   + exit <!-- 退出-->
 
 ## 注册gitlab-runner
-+ 下载gitlab-runner镜像 docker pull gitlab/gitlab-runner:latest
-+ 创建并运行gitlab runner容器 
-  + docker run -d --name gitlabRunner \
-    -v /host/gitlab-runner/config:/etc/gitlab-runner \
-    -v /host/var/run/docker.sock:/var/run/docker.sock \
-    gitlab/gitlab-runner:latest
-+ 在gitlab的runner配置页面，获取registration，注册runner： 
-  + docker exec -it gitlabRunner gitlab-runner register --url http://192.168.1.5:8880/ --registration-token GR1348941rQANvwQHQk3Y1ysxXiap
-  + Please enter the executor选docker
-  + Please enter the default Docker image 写alpine:latest
++ 安装gitlab-runner brew install gitlab-runner
++ 启动并注册为启动项 brew services start gitlab-runner
++ 注册： gitlab-runner register --url http://127.0.0.1/ --registration-token GR1348941rQANvwQHQk3Y1ysxXiap
 
 ## .gitlab.yml
+```yml
+stages:
+  - lint
+  - build
+  # - deploy
+
+image: node
+
+# 缓存node_modules
+cache:
+  key: ${CI_PROJECT_NAME}
+  paths: [node_modules/]
+
+lint:
+  tags:
+    - shared
+  stage: lint
+  script:
+    - npm i
+    # 拉取分支信息，后面可以diff
+    - git fetch origin
+    # 存储此次merge_request的变更描述，可以写个脚本按行读取，生成changelog
+    # - git log origin/main..origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --pretty=format:"%s" > commit_messages.txt
+    # 规定当前分支必须要从main分支切出，可以在这里用eslint检查与main分支有差别的文件
+    - git diff --name-only "origin/main...HEAD" --diff-filter=ACM | grep -E '.*\.(vue|js)$' | xargs eslint
+  only:
+    refs:
+      - merge_requests # 当merge-request开启或更新的时候，执行
+  except:
+    refs:
+      - develop # develop分支不执行
+  # artifacts:
+  #   paths:
+  #     - commit_messages.txt
+
+build:
+  tags:
+    - shared
+  stage: build
+  script:
+    - npm run build
+  # develop分支和main分支执行build
+  only:
+    refs:
+      - develop
+      - main
+
+```
