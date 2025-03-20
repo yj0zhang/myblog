@@ -424,7 +424,178 @@ dom是一颗树，stack reconciler是使用递归方式遍历这颗树的，而f
 - 更新状态时，使用函数式更新：setState(state => state)
 - 如果闭包陷阱出现在回调函数中，使用useCallback包裹函数，并正确设置依赖数组
 
+## react中如何实现渲染控制（useMemo）
+```js
+const Child = (num) => {
+  console.log('子组件执行')
+  return (
+      <div>this is child -- {num}</div>
+    )
+}
+class Parent extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      num: 0,
+      count: 0
+    }
+  }
+  render() {
+    const {num, count} = this.state;
+    return (
+      <div>
+        {/* 不管点count还是num，子组件都会执行 */}
+        <Child num={num} />
+        <button onClick={() => this.setState({num: num + 1})}>+ num</button>
+        <button onClick={() => this.setState({count: count + 1})}>+ count</button>
+      </div>
+    )
+  }
+}
 
+class RenderControlParent extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      num: 0,
+      count: 0
+    }
+    this.component = <Child num={this.state.num} />
+  }
+  // 这样控制后，count变化，子组件不会在执行
+  controlRender = () => {
+    const {props} = this.component;
+    if(props.num !== this.state.num) {
+      return this.component = React.cloneElement(this.component, {num: this.state.num});
+    }
+    return this.component;
+  }
+  render() {
+    const {num, count} = this.state;
+    return (
+      <div>
+        {this.controlRender()}
+        <button onClick={() => this.setState({num: num + 1})}>+ num</button>
+        <button onClick={() => this.setState({count: count + 1})}>+ count</button>
+      </div>
+    )
+  }
+}
+```
+
+## 如何实现一个redux
+```js
+const createStore = function(reducer,initState) {
+  let state = initState;
+  let listeners = [];
+  function subscribe(handler) {
+    listeners.push(handler)
+  }
+  function dispatch(action) {
+    const currentState = reducer(state, action);
+    state = currentState;
+    listeners.forEach(handler => {
+      handler();
+    })
+  }
+  function getState() {
+    return state;
+  }
+  return {
+    subscribe, dispatch, getState
+  }
+}
+// const reducer = combineReducer({
+//   a: AReducer,
+//   b: BReducer
+// })
+// const state = {
+//   a: XXX,
+//   b: XXX
+// }
+const combineReducer = (reducers) => {
+  const keys = Object.keys(reducers);
+  return function(state = {}, action) {
+    const nextState = {};
+    keys.forEach(key => {
+      const reducer = reducers[key];
+      const next = reducer(state[key],action);
+      nextState[key] = next
+    })
+    return nextState;
+  }
+}
+```
+
+## useRoutes的原理是什么？
+useRoutes是把一堆jsx转换为用配置，使用该配置返回原来的jsx
+
+```js
+import React from 'react'
+import {BrowserRouter} from 'react-router'
+
+const createRoutesFromChildren = children => {
+  let routes = [];
+  React.Children.forEach(children, node => {
+    let route = {
+      path: node.props.path,
+      element: node.props.element
+    }
+    if(node.children) {
+      route.children = createRoutesFromChildren(node.children)
+    }
+    routes.push(route)
+  })
+  return routes;
+}
+const useRoutes = (routes) => {
+  let location = useLocation();
+  let currentPath = location.pathname || '/';
+  let ret = [];
+  functio matchRoutes(list) {
+    for(let i = 0; i < routes.length; i++) {
+      let {path, element} = routes[i];
+      let match = currentPath.match(new RegExp(`^${path}`));
+      if(match) {
+        ret.push(element);
+        if(element.children) {
+          const childMatch = matchRoutes(element.children);
+          childMatch && ret.push();
+        }
+        return element;
+      }
+    }
+  }
+  matchRoutes(routes);
+  return ret[ret.length - 1];
+}
+
+const Routes = ({children}) => useRoutes(createRoutesFromChildren(children));
+
+return <BrowserRouter>
+  <Routes>
+    <Route/>
+  </Routes>
+</BrowserRouter>
+```
+
+## react18为什么选择 messageChannel 来让出执行权？
+### 浏览器
+- 帧率：动画或视频或页面，是一帧一帧的图片组合得到的
+- 一般浏览器是60帧，即1秒切换60次，16.666ms一帧
+- 人的眼睛，一般20帧左右，就可以感觉到比较流畅的动画了，
+### 浏览器在一帧里，做了哪些事情呢？
+| ------------------------------ 16.666ms ------------------------------ |
+| 宏任务 | 微任务 | requestAnimationFrame | layout | requestIdleCallback
+这些任务在一帧里完成，但是前面宏任务可能前面的任务时间太长，layout不执行，就会卡顿
+
+### messageChannel
+假设宏任务可以做时间切片，每片占用的时间不长，就不会影响layout执行，解决卡顿问题。
+后续的切片交给谁呢？
+- promise 是微任务，还是会占用当前帧的时间
+- setTimeout 如果处于递归循环的话，会有4ms的延迟
+- requestIdleCallback 有兼容性问题，和50ms渲染问题
+综上，用messageChannel交给下一个宏任务
 
 ## react性能优化的方式
 - React.memo，用于函数式组件，避免在props不变的时候重新渲染
