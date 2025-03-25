@@ -36,6 +36,9 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 - object
 - symbol
 - bigInt
+### 类型断言
+[typeAsserts](./typeAsserts.ts)
+
 ## 高级类型
 ## 内置类型
 ## 自定义类型
