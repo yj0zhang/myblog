@@ -1,0 +1,19 @@
+{
+  "name": "ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "dev": "rollup -c -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.37.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.8.2"
+  }
+}

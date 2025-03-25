@@ -1,0 +1,1 @@
+{"version":3,"file":"bundle.js","sources":["../index.ts"],"sourcesContent":["const a: number = 1\nconsole.log(a)"],"names":[],"mappings":";;;CAAA,MAAM,CAAC,GAAW,CAAC;CACnB,OAAO,CAAC,GAAG,CAAC,CAAC,CAAC;;;;;;"}
