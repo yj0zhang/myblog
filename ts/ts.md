@@ -46,6 +46,10 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 ## 接口和泛型
 [interfaceAndGeneric](./src/interfaceAndGeneric.ts)
 
+## 交叉类型
+[crossType](./src/crossType.ts)
+
+
 ## 内置类型
 ## 自定义类型
 ## 类型体操

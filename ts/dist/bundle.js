@@ -140,10 +140,92 @@
         Singleton.getInstance();
     }
 
+    function interfaceAndGeneric () {
+        // 如何表示函数的参数是一个类
+        class Dog {
+            constructor() {
+                this.a = 1;
+            }
+        }
+        class Cat {
+            constructor() {
+                this.a = 1;
+                this.b = 1;
+            }
+        }
+        {
+            // 类类型，不能描述类本身，描述的是实例
+            // 类的类型，需要通过typeof来取
+            function createInstance(clazz) {
+                return new clazz();
+            }
+            createInstance(Dog);
+            // instance2也是Dog类型（鸭子类型检测）
+            createInstance(Cat);
+        }
+        {
+            // type IClazz<T> = new (name: string) => T
+            function createInstance(clazz) {
+                return new clazz();
+            }
+            // function createInstance<T>(clazz: new () => T) {
+            //     return new clazz()
+            // }
+            // const instance1 = createInstance<Dog>(Dog);
+            // const instance2 = createInstance<Cat>(Cat);
+            // 可以省略，ts会推导
+            createInstance(Dog);
+            createInstance(Cat);
+        }
+        // ------------------- generic 泛型 -------------------
+        // 泛型可以用于 函数、接口、类、type
+        // 刚开始类型不确定，使用的时候才能确定
+        // const createArr = <T>(times: number, val: T) => {
+        // }
+        function createArr(times, val) {
+            return Array.from({ length: times }).fill(val);
+        }
+        createArr(2, 'a');
+        createArr(2, 1);
+        const forEach = (arr, cb) => {
+            for (let i = 0; i < arr.length; i++) {
+                cb(arr[i]);
+            }
+        };
+        forEach(['a', 2, 3], function (val) {
+            console.log(val);
+        });
+        {
+            //类中的泛型
+            //求一个数组中的最大值
+            class MyList {
+                constructor() {
+                    this.arr = [];
+                }
+                add(val) {
+                    this.arr.push(val);
+                }
+                ;
+                getMax() {
+                    //业务逻辑
+                    return this.arr[0];
+                }
+            }
+            const list = new MyList;
+            list.add(1);
+            list.add(100);
+            list.add(200);
+            list.getMax();
+            //泛型可以使用的场景： 函数，对象，类
+            //泛型有约束和默认值
+        }
+    }
+
     baseType();
     typeAsserts();
     functionType();
     classType();
+    interfaceAndGeneric();
 
 })();
 //# sourceMappingURL=bundle.js.map
