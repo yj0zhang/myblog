@@ -195,4 +195,78 @@ forEach(['a', 2, 3], function (val) {
     console.log(val)
 });
 
+{
+    // 泛型的默认值
+    interface APIResponse<T = any> {
+        error: number;
+        message?: string;
+        data: T;
+    }
+    interface LoginInfo {
+        username: string;
+        token: string;
+    }
+    function login(): APIResponse<LoginInfo> {
+        return {
+            error: 0,
+            message: 'success',
+            data: {
+                username: 'a',
+                token: 'a'
+            }
+        }
+    }
+    let r = login();
+
+
+    // 联合类型中的泛型
+    type IUnion<T = boolean> = T | string | number;
+    type t1 = IUnion;
+    type t2 = IUnion<string[] | number[]>;
+
+    //泛型是用户传递的类型，但在使用泛型的时候，都要添加泛型约束
+    function getVal<T>(val: T): T {
+        // return val + val;//在使用泛型的时候，不能直接做运算，因为无法保证泛型的结果
+        return val
+    }
+    getVal(1);
+
+
+    //如何限制调用getVal时，只能传string或number？
+    //extends约束T需要是string | number的子类型
+    function getVal1<T extends string | number>(val: T): T {
+        // return val + val;//在使用泛型的时候，不能直接做运算，因为无法保证泛型的结果
+        return val
+    }
+    //getVal1限制泛型只能是string | number
+    // getVal1(true)
+    getVal1(1)
+}
+
+{
+    //类中的泛型
+    //求一个数组中的最大值
+    class MyList<T extends string | number> {
+        private arr: T[] = [];
+        add(val: T) {
+            this.arr.push(val)
+        };
+        getMax(): T {
+            //业务逻辑
+            return this.arr[0];
+        }
+    }
+
+    const list = new MyList<number>
+    list.add(1);
+    list.add(100);
+    list.add(200);
+    list.getMax();
+
+
+
+    //泛型可以使用的场景： 函数，对象，类
+    //泛型有约束和默认值
+}
+
 export default {}
