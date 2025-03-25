@@ -40,6 +40,12 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 [typeAsserts](./src/typeAsserts.ts)
 ## 函数类型
 [functionType](./src/functionType.ts)
+## class
+[classType](./src/classType.ts)
+
+## 接口和泛型
+[interfaceAndGeneric](./src/interfaceAndGeneric.ts)
+
 ## 内置类型
 ## 自定义类型
 ## 类型体操

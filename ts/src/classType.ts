@@ -58,6 +58,9 @@ export default function () {
     }
     const tom = new Cat('tom', 3);
     tom.changeName('jerry');
+    //子类型可以赋值给父类型
+    let a: Animal = tom;
+    // a.age;//但此时a不能取到子类的属性
 
     class A {
         // private 只能在类内部访问，子类不能访问，此时A不能被继承，也不能被new
