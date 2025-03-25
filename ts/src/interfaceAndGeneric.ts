@@ -158,5 +158,41 @@ class Cat {
 
 
 
+// ------------------- generic 泛型 -------------------
+// 泛型可以用于 函数、接口、类、type
+// 刚开始类型不确定，使用的时候才能确定
+
+// const createArr = <T>(times: number, val: T) => {
+
+// }
+function createArr<T>(times: number, val: T) {
+    return Array.from({ length: times }).fill(val) as T[]
+}
+
+let arr3 = createArr<string>(2, 'a');
+let arr4 = createArr<number>(2, 1);
+
+//值的交换
+function swap<T, K>(tuple: [T, K]): [K, T] {
+    return [tuple[1], tuple[0]]
+}
+const r = swap([1, 'a']);
+
+// IForEach<T> 表示使用接口的时候确定类型
+// <T>():void 表示使用这个函数的时候确定类型
+// interface IForEach {
+//     <T>(arr: T[], cb: (val: T) => void): void
+// }
+// type方式
+type ICallback<T> = (val: T) => void;
+type IForEach = <T>(arr: T[], cb: ICallback<T>) => void;
+const forEach: IForEach = (arr, cb) => {
+    for (let i = 0; i < arr.length; i++) {
+        cb(arr[i])
+    }
+}
+forEach(['a', 2, 3], function (val) {
+    console.log(val)
+});
 
 export default {}
