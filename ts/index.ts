@@ -1,2 +1,3 @@
-const a: number = 1
-console.log(a)
+import baseType from './baseType';
+
+baseType()
