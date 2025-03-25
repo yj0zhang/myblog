@@ -86,9 +86,64 @@
         toArray(111);
     }
 
+    function classType () {
+        class Animal {
+            constructor(name) {
+                this.name = name;
+                //实例属性
+                this.name = name;
+            }
+            // 原型方法 这里的void表示不关心返回值
+            changeName(value, age) {
+                this.name = value;
+            }
+            // 原型属性，需要通过访问器实现
+            get aliasName() {
+                return '$' + this.name;
+            }
+            set aliasName(name) {
+                this.name = name;
+            }
+            static getA() {
+                // 静态方法中的this，指的是类本身
+                return this.a;
+            }
+        }
+        //静态属性
+        Animal.a = 1;
+        // super在构造函数中，指向父类；在原型方法中，指向的是父类的原型
+        class Cat extends Animal {
+            constructor(name, age) {
+                super(name); //Animal.call(this)
+                this.age = age;
+                this.age = age;
+                // this.name = '3'
+            }
+            // 重写父类的方法，参数类型要兼容，保证子类调用父类的时候参数一致
+            changeName(value) {
+                super.changeName(value, 10);
+                // this.name = value;
+                return 'a';
+            }
+        }
+        const tom = new Cat('tom', 3);
+        tom.changeName('jerry');
+        // private constructor可以在单例模式中使用，不在外部使用new关键字创建实例：
+        class Singleton {
+            constructor() { }
+            ;
+            static getInstance() {
+                return this.instance;
+            }
+        }
+        Singleton.instance = new Singleton();
+        Singleton.getInstance();
+    }
+
     baseType();
     typeAsserts();
     functionType();
+    classType();
 
 })();
 //# sourceMappingURL=bundle.js.map
