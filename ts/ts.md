@@ -20,7 +20,7 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 
 # 类型分类
 ## 基础类型
-[baseType](./baseType.ts)
+[baseType](./src/baseType.ts)
 - string
 - number
 - boolean
@@ -36,10 +36,10 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 - object
 - symbol
 - bigInt
-### 类型断言
-[typeAsserts](./typeAsserts.ts)
-
-## 高级类型
+## 类型断言
+[typeAsserts](./src/typeAsserts.ts)
+## 函数类型
+[functionType](./src/functionType.ts)
 ## 内置类型
 ## 自定义类型
 ## 类型体操

@@ -42,7 +42,53 @@
         BigInt(1); //需要把target改为"ES2020"之后，或者添加lib: ["ES2020", "DOM"]，（console.log属于DOM）
     };
 
+    const typeAsserts = function () {
+        // 断言
+        let strOrNum;
+        // 在使用联合类型的时候，通常会先赋值，再使用
+        // strOrNum = 1;
+        // strOrNum.toFixed();
+        // strOrNum = '1';
+        // strOrNum.charCodeAt(0);
+        // 对于某些情况下，变量的值已确定，可以使用断言，同时使用非空断言!，此时ts不会进行类型检测了
+        strOrNum.toFixed(1);
+        strOrNum.toFixed(1);
+        let ele = document.getElementById('app');
+        ele.style.background = '';
+    };
+
+    function functionType () {
+        // 参数this问题
+        // 尽量不采用this来作为函数的上下文，this的缺陷就是类型推导问题
+        // 如果想限制this类型，那么需要手动置顶this类型
+        const person = { name: 'z', age: 30 };
+        // this放在第一个参数，定义类型；不是形参
+        function getValue(key) {
+            return this[key];
+        }
+        getValue.call(person, 'name');
+        // 参数不定项
+        function sum6(...args) {
+            return args.reduce((memo, cur) => (memo += cur, memo), 0);
+        }
+        sum6(1, 2, 3);
+        //上面的声明仅仅是类型重载
+        function toArray(value) {
+            if (typeof value === 'number') {
+                return value.toString().split('').map(Number);
+            }
+            if (typeof value === 'string') {
+                return value.split('');
+            }
+            return [];
+        }
+        toArray('aaa');
+        toArray(111);
+    }
+
     baseType();
+    typeAsserts();
+    functionType();
 
 })();
 //# sourceMappingURL=bundle.js.map

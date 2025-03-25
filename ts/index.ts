@@ -1,5 +1,7 @@
-import baseType from './baseType';
-import typeAsserts from './typeAsserts';
+import baseType from './src/baseType';
+import typeAsserts from './src/typeAsserts';
+import functionType from './src/functionType';
 
 baseType()
 typeAsserts()
+functionType()
