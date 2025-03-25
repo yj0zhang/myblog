@@ -142,6 +142,7 @@
             </div>
     }
     ```
+
 ## 如果使用hooks，通过数据接口访问数据
 ```js
 const [state, setState] = useState([])
@@ -400,7 +401,10 @@ dom是一颗树，stack reconciler是使用递归方式遍历这颗树的，而f
         const timer = setInterval(() => {
             console.log(num);//始终是0，拿不到最新值
         },1000)
-        return () => clearInterval(timer)
+        return () => {
+          clearInterval(timer);
+          timer = null;
+        }
     },[]);//只在挂载时执行
     return (
         <div>
@@ -607,6 +611,7 @@ return <BrowserRouter>
 - 使用Context时，如果Provider的值发生变化，所有消费该Context的组件都会重新渲染，
   - 需要拆分成小的Context
   - 使用useMemo或usseCallback优化Context的值
+- 使用useEffect的销毁方法，清理副作用
 - 渲染长列表时，使用虚拟滚动技术
 - 懒加载组件，React.lazy和Suspense
 - 避免不必要的dom操作，使用css动画代替js动画
@@ -619,3 +624,12 @@ return <BrowserRouter>
   - React DevTools Profiler: 分析组件的渲染性能
   - Chrome DevTools Performance: 分析js执行性能
   - Lighthouse: 分析应用的加载性能
+  
+
+## react-redux中的connect的意义是什么？它做了哪些事情
+- 封装对状态的读写，同时把读写方法传递给需要connect的组件（c），在connect内部，会订阅状态的改变，通过setState主动触发组件c的渲染。
+  - 封装天状态的读写方法
+    - 根据`mapStateToProps`和`mapDispatchToProps`拿到状态和操作状态的方法，传递给组件c
+  - 订阅状态的更新
+    - 在恰当的时候，渲染组件c：当`mapStateToProps`改变，旧订阅，当状态更新时，判断根据`mapStateToProps`拿到的新数据是否不同，如果不同，更新组件c
+
