@@ -70,11 +70,11 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
 
 ### 条件类型&基于条件类型的内置类型
 
-[conditionType](./src/conditionType.ts)
+[conditionBuiltinType](./src/conditionBuiltinType.ts)
 
-### 对象类型&基于对象类型 keys 的内置类型
+### 基于集合的内置类型
 
-[objectKeysType](./src/objectKeysType.ts)
+[keysBuiltinType](./src/keysBuiltinType.ts)
 
 ## infer 类型推断
 

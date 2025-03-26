@@ -1,5 +1,5 @@
 export default function () {
-    //基于对象类型的内置类型
+    //基于对象类型keys的内置类型
     interface Person1 {
         handsome: string;
     }
@@ -13,7 +13,7 @@ export default function () {
     };
     type Person3 = Compute<Person1 & Person2>;
 
-    // 内置类型 Partial Required Pick Omit...
+    // 内置类型 Partial Required Pick Omit Record...
     interface IPerson {
         name?: string;
         age?: number;
@@ -59,4 +59,23 @@ export default function () {
             age: 30
         }
     };
+    //Pick
+    type Pick<T, K extends keyof T> = {
+        [P in K]: T[P]
+    };
+    type PickPerson = Pick<ICompany, 'person' | 'age'>;
+    //Omit
+    type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+    type OmitPerson = Omit<ICompany, 'person' | 'age'>;
+
+    //Record 取代object
+    //K,V,R是在执行时，自动推导的
+    function map<K extends keyof any, V, R>(obj: Record<K, V>, cb: (item: V, key: K) => R) {
+        let result = {} as Record<K, R>;
+        for (let key in obj) {
+            result[key] = cb(obj[key], key);
+        }
+        return result;
+    }
+    map({ name: 'a', age: 20 }, (item, key) => item + key);
 }
