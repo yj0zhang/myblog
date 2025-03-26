@@ -84,6 +84,10 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
 
 [compatibility](./src/compatibility.ts)
 
+## 类型保护
+
+[typeProtected](./src/typeProtected.ts)
+
 ## 自定义类型
 
 ## 类型体操
