@@ -1,4 +1,4 @@
-//内置类型
+//基于条件类型的内置类型
 
 export default function () {
 
