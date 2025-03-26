@@ -1,0 +1,6 @@
+{
+  "editor.formateOnSave": true,
+  "prettier.semi": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.format.semicolons": "insert"
+}

@@ -30,7 +30,7 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 - null
 - undefined
 - void
-- never
+- never 这是最小的类型，是任何类型的子类型
 - any
 - unknown
 - object
@@ -50,6 +50,9 @@ ts是用来检测类型的，只在开发时生效，在运行时没有类型（
 [crossType](./src/crossType.ts)
 
 
-## 内置类型
+## 条件类型
+[conditionType](./src/conditionType.ts)
+
+
 ## 自定义类型
 ## 类型体操
