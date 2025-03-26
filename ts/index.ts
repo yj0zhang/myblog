@@ -6,6 +6,7 @@ import interfaceAndGeneric from './src/interfaceAndGeneric';
 import crossType from './src/crossType';
 import conditionType from './src/conditionType';
 import objectKeysType from './src/objectKeysType';
+import infer from './src/infer';
 
 baseType();
 typeAsserts();
@@ -15,3 +16,4 @@ interfaceAndGeneric();
 crossType();
 conditionType();
 objectKeysType();
+infer();
