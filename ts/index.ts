@@ -7,6 +7,7 @@ import crossType from './src/crossType';
 import conditionType from './src/conditionBuiltinType';
 import objectKeysType from './src/keysBuiltinType';
 import infer from './src/infer';
+import compatibility from './src/compatibility';
 
 baseType();
 typeAsserts();
@@ -17,3 +18,4 @@ crossType();
 conditionType();
 objectKeysType();
 infer();
+compatibility();
