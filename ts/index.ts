@@ -9,6 +9,7 @@ import objectKeysType from './src/keysBuiltinType';
 import infer from './src/infer';
 import compatibility from './src/compatibility';
 import typeProtected from './src/typeProtected';
+import customType from './src/customType';
 
 baseType();
 typeAsserts();
@@ -21,3 +22,4 @@ objectKeysType();
 infer();
 compatibility();
 typeProtected();
+customType();
