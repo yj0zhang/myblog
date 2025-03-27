@@ -111,5 +111,16 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
   - `declare const a:number` 告诉 ts 全局下有 number 类型的常量 a
   - 一般单独放在一个 d.ts 文件中[env.d.ts](./src/env.d.ts)
   - 需要在 tsconfig.json 中添加 types 字段，里面填写类型声明文件路径，告诉 ts 去哪里找类型声明文件
+- ts 查找类型声明的方式：
+  - 查找 node_modules 下同名模块中，package.json 中的 types 字段
+  - 查找 node_modules 下同名模块下的 index.d.ts
+  - 查找 node_modules 下@types 中是否有同名模块，找到后按照上述方式继续查找
+  - 除了以上方式，还可以在 tsconfig 中定义 paths，让 ts 根据 paths 配置查找声明，这种方式优先级比上面的高
+    - paths: { "_": ["./src/types/_"]} // 表示所有类型先从./src/types/文件夹下找
+      - [lodash 声明文件](./src/types/lodash.d.ts)
+- 在.d.ts 中还可使用三斜线指令引入其他声明文件：
+  - /// <reference path="./XXX"> 按文件路径加载类型
+  - /// <reference types="XXX"> 引入第三方声明文件
+  - /// <reference lib="XXX"> 加载内置的类型
 
 ## 类型体操

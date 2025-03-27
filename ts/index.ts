@@ -28,3 +28,7 @@ console.log(n.Zoo.Dog);
 
 //全局声明了有a，ts不会报错，但实际上没有a，运行时会报错
 console.log('declare:', a);
+
+import _ from 'lodash';
+_.copy();
+_.withIn();
