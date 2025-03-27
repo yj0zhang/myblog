@@ -10,6 +10,7 @@ import infer from './src/infer';
 import compatibility from './src/compatibility';
 import typeProtected from './src/typeProtected';
 import customType from './src/customType';
+import { n } from './src/namespace';
 
 baseType();
 typeAsserts();
@@ -23,3 +24,4 @@ infer();
 compatibility();
 typeProtected();
 customType();
+console.log(n.Zoo.Dog);
