@@ -34,5 +34,5 @@ const typeAsserts = function () {
     type Direction = 'up' | 'down';
     let d: Direction = 'up';
     let up: 'down' = d as 'down';
-}
+};
 export default typeAsserts;

@@ -13,11 +13,11 @@ import customType from './src/customType';
 import { n } from './src/namespace';
 
 baseType();
-typeAsserts();
+// typeAsserts();
 functionType();
 classType();
 interfaceAndGeneric();
-crossType();
+// crossType();
 conditionType();
 objectKeysType();
 infer();
@@ -25,3 +25,6 @@ compatibility();
 typeProtected();
 customType();
 console.log(n.Zoo.Dog);
+
+//全局声明了有a，ts不会报错，但实际上没有a，运行时会报错
+console.log('declare:', a);

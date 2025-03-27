@@ -96,4 +96,20 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
 
 [namespace](./src/namespace.ts)
 
+## 外部模块
+
+- ts 为了能做到 commonjs 和 amd 互转，自己发明了一种写法(export = XXX / import a = require('XXX'))
+  - 基本不用
+  - 使用 esModule 替代
+- tsconfig 配置
+  - target 指代打包后的语法
+  - module 导出的模块规范
+  - declaration 打包时为每个 ts 文件生成类型声明文件
+  - moduleResolution
+- 使用的第三方库时，如果没有 ts 类型，需要自己编写(.d.ts 文件)，或者安装社区类型 npm i @types/XXX
+- declare 用于声明类型，告诉 ts 全局下有某些类型
+  - `declare const a:number` 告诉 ts 全局下有 number 类型的常量 a
+  - 一般单独放在一个 d.ts 文件中[env.d.ts](./src/env.d.ts)
+  - 需要在 tsconfig.json 中添加 types 字段，里面填写类型声明文件路径，告诉 ts 去哪里找类型声明文件
+
 ## 类型体操

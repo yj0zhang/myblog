@@ -42,21 +42,6 @@
         BigInt(1); //需要把target改为"ES2020"之后，或者添加lib: ["ES2020", "DOM"]，（console.log属于DOM）
     };
 
-    const typeAsserts = function () {
-        // 断言
-        let strOrNum;
-        // 在使用联合类型的时候，通常会先赋值，再使用
-        // strOrNum = 1;
-        // strOrNum.toFixed();
-        // strOrNum = '1';
-        // strOrNum.charCodeAt(0);
-        // 对于某些情况下，变量的值已确定，可以使用断言，同时使用非空断言!，此时ts不会进行类型检测了
-        strOrNum.toFixed(1);
-        strOrNum.toFixed(1);
-        let ele = document.getElementById('app');
-        ele.style.background = '';
-    };
-
     function functionType () {
         // 参数this问题
         // 尽量不采用this来作为函数的上下文，this的缺陷就是类型推导问题
@@ -221,11 +206,110 @@
         }
     }
 
+    //基于条件类型的内置类型
+    function conditionType () {
+        // type NoNullable<T> = T & {};
+        document.getElementById('app');
+    }
+
+    function compatibility () {
+        // c1 = c2;
+        // 逆变
+        // 如果两个函数的参数是父与子的关系，
+        // 那么函数的关系是反过来的，叫逆变
+        class Parent {
+            car() { }
+        }
+        class Child extends Parent {
+            house() { }
+        }
+        class Grandson extends Child {
+            sleep() { }
+        }
+        // 安全性考虑
+        // 1）内部调用函数的时候，可以传递Child和Grandson，但是在使用属性时，只能调用child有的属性
+        // 2）函数的返回值，需要返回子类，因为内部代码在访问属性的时候要保证可以访问到
+        function fn(cb) {
+            let r = cb(new Grandson());
+            r.house;
+        }
+        // 参数child不能是Grandson类型，返回值不能是Parent类型
+        fn((child) => {
+            return new Grandson();
+        });
+        // 对象的兼容性，子可以赋值给父
+        // 类型层级兼容性 never -> 字面量 -> 基础类型 -> 包装类型 -> any / unknown
+    }
+
+    function typeProtected () {
+        class Cat {
+            cry() { }
+        }
+        function getInstance(clazz) {
+            return new clazz();
+        }
+        const ins = getInstance(Cat);
+        if (ins instanceof Cat) {
+            ins.cry();
+        }
+        else {
+            ins.eat();
+        }
+    }
+
+    var n;
+    (function (n) {
+        // namespace 避免文件内部命名冲突 很少用，因为模块化了
+        let Zoo;
+        (function (Zoo) {
+            // 可以在外部通过import导入Zoo，通过Zoo.Dog使用
+            class Dog {
+            }
+            Zoo.Dog = Dog;
+            (function (House) {
+                class Dog {
+                }
+                House.Dog = Dog;
+            })(Zoo.House || (Zoo.House = {}));
+        })(Zoo = n.Zoo || (n.Zoo = {}));
+        (function (Home) {
+            class Dog {
+            }
+            Home.Dog = Dog;
+        })(n.Home || (n.Home = {}));
+        Zoo.House.Dog;
+        // namespace还可以扩展类、函数、枚举，但必须写在这些声明的下面
+        class Animal {
+        }
+        (function (Animal) {
+            Animal.a = 1;
+        })(Animal || (Animal = {}));
+        function counter() {
+            return counter.count++;
+        }
+        (function (counter) {
+            counter.count = 0;
+        })(counter || (counter = {}));
+        let Season;
+        (function (Season) {
+        })(Season || (Season = {}));
+        (function (Season) {
+            Season.Spring = "春";
+        })(Season || (Season = {}));
+    })(n || (n = {}));
+
     baseType();
-    typeAsserts();
+    // typeAsserts();
     functionType();
     classType();
     interfaceAndGeneric();
+    // crossType();
+    conditionType();
+    compatibility();
+    typeProtected();
+    console.log(n.Zoo.Dog);
+    //全局声明了有a，ts不会报错，但实际上没有a，运行时会报错
+    console.log('declare:', a);
 
 })();
 //# sourceMappingURL=bundle.js.map
