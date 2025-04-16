@@ -124,3 +124,7 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
   - /// <reference lib="XXX"> 加载内置的类型
 
 ## 类型体操
+
+## 装饰器（试验性语法，后续具体实现可能会发生变化）
+
+[decorators](./src/myDecorators.ts)

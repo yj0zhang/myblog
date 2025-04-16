@@ -11,6 +11,7 @@ import compatibility from './src/compatibility';
 import typeProtected from './src/typeProtected';
 import customType from './src/customType';
 import { n } from './src/namespace';
+import myDecorators from './src/myDecorators';
 
 baseType();
 // typeAsserts();
@@ -27,8 +28,9 @@ customType();
 console.log(n.Zoo.Dog);
 
 //全局声明了有a，ts不会报错，但实际上没有a，运行时会报错
-console.log('declare:', a);
+// console.log('declare:', a);
 
-import _ from 'lodash';
-_.copy();
-_.withIn();
+// import _ from 'lodash';
+// _.copy();
+// _.withIn();
+myDecorators();

@@ -298,6 +298,126 @@
         })(Season || (Season = {}));
     })(n || (n = {}));
 
+    /******************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+    /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+        var e = new Error(message);
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
+
+    function myDecorators () {
+        // 什么是装饰器： 本质是函数，只能在类和类的成员上使用
+        // ts装饰器：类装饰器、方法装饰器、属性装饰器、访问器装饰器(get set)、参数装饰器
+        {
+            // 1.类装饰器
+            function ClassDecorator(target) {
+                // target指向的是类的构造函数constructor
+                target.type = 'animal';
+                target.getType = function () {
+                    return this.type;
+                };
+                target.prototype.eat = function () {
+                    console.log('eat');
+                };
+            }
+            function OvertideDecorator(target) {
+                return class extends target {
+                    eat() {
+                        super.eat();
+                        console.log('OvertideDecorator eat');
+                    }
+                };
+            }
+            let Animal = class Animal {
+            };
+            Animal = __decorate([
+                OvertideDecorator,
+                ClassDecorator
+            ], Animal);
+            console.log('class decorators static:', Animal.getType());
+            new Animal().eat();
+        }
+        {
+            //装饰器工厂，是一个返回装饰器函数的函数，允许你传递参数给装饰器
+            function Enum(isEnm) {
+                // target:类的原型
+                // key: 方法名
+                // keyDescriptor: 方法描述符
+                return function (target, key, keyDescriptor) {
+                    keyDescriptor.enumerable = isEnm;
+                    let original = keyDescriptor.value; //保存原始方法
+                    keyDescriptor.value = function (...args) {
+                        // 重写方法
+                        console.log('pre');
+                        original.call(this, ...args);
+                        console.log('next');
+                    };
+                };
+            }
+            // 方法装饰器
+            class Animal {
+                eat() {
+                    console.log('eat');
+                }
+            }
+            __decorate([
+                Enum(true)
+            ], Animal.prototype, "eat", null);
+            const a = new Animal();
+            a.eat();
+        }
+        {
+            // 属性装饰器
+            //key 参数名
+            function toUpperCase(target, key) {
+                console.log('toUpperCase>', target, key);
+                let value = '';
+                Object.defineProperty(target, key, {
+                    get() {
+                        console.log('get ', key);
+                        return value;
+                    },
+                    set(val) {
+                        value = val.toUpperCase();
+                    }
+                });
+            }
+            class Animal {
+                constructor() {
+                    this.name = 'aaa';
+                    this.a = 1;
+                }
+            }
+            __decorate([
+                toUpperCase
+            ], Animal.prototype, "name", void 0);
+            const animal = new Animal();
+            console.log(Animal, animal.name);
+        }
+    }
+
     baseType();
     // typeAsserts();
     functionType();
@@ -309,7 +429,11 @@
     typeProtected();
     console.log(n.Zoo.Dog);
     //全局声明了有a，ts不会报错，但实际上没有a，运行时会报错
-    console.log('declare:', a);
+    // console.log('declare:', a);
+    // import _ from 'lodash';
+    // _.copy();
+    // _.withIn();
+    myDecorators();
 
 })();
 //# sourceMappingURL=bundle.js.map
