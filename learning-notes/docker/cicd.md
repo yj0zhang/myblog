@@ -1,28 +1,28 @@
-## cicd是什么
-在开发过程中，为了保证代码质量、简化合并和部署的流程，需要用到cicd。
-ci就是持续集成，在pr open和pr更新时，执行代码eslint和prettier检查，可以快速发现代码问题，保证代码质量；中间可以集成企业微信消息，通知执行结果
-cd就是持续部署，在pr被合并后，进行代码构建，docker镜像打包，打包成功后再打个版本tag，最后发布到服务器；中间可以集成企业微信消息，通知执行结果
+## cicd 是什么
 
-借助的工具是gitlab-runner和gitlab-ci
+在开发过程中，为了保证代码质量、简化合并和部署的流程，需要用到 cicd。
+ci 就是持续集成，在 pr open 和 pr 更新时，执行代码 eslint 和 prettier 检查，可以快速发现代码问题，保证代码质量；中间可以集成企业微信消息，通知执行结果
+cd 就是持续部署，在 pr 被合并后，进行代码构建，docker 镜像打包，打包成功后再打个版本 tag，最后发布到服务器；中间可以集成企业微信消息，通知执行结果
 
-ci阶段可以自动合并代码吗？
-cicd在发送企业微信的时候，如何获取commit-msg，让通知更加语义化？
-ci检查代码时，eslint和prettier是否可以支持增量检查？
-changelog ? 根据commit-msg生成
+借助的工具是 gitlab-runner 和 gitlab-ci
+
+ci 阶段可以自动合并代码吗？
+cicd 在发送企业微信的时候，如何获取 commit-msg，让通知更加语义化？
+ci 检查代码时，eslint 和 prettier 是否可以支持增量检查？
+changelog ? 根据 commit-msg 生成
 Preview/Review App ?
 lint-staged ?
 husky(git hooks)
 
-
-cd是否可以和jenkins结合？
+cd 是否可以和 jenkins 结合？
 docker-compose
 
-
 ## gitlab-runner
-cicd是持续集成和持续部署，使用gitlab-runner和gitlab-ci实现
+
+cicd 是持续集成和持续部署，使用 gitlab-runner 和 gitlab-ci 实现
+
 - gitlab-runner ?
 - gitlab-ci ?
-
 
 <!-- stages:
   - install
@@ -103,3 +103,18 @@ deploy_stable_commission_job:
     - feature/commission
     - stable/commission
   when: manual -->
+
+## cicd 过程示例
+
+- lint
+  - 在发起 merge_request 或者 merge_request 更新的时候，执行这一节点
+  - 使用 git diff 命令，与主分枝对比，找出本次更新修改的所有文件
+  - 把修改的文件用 eslint 命令检查一遍
+- build
+  - 安装依赖包
+  - 执行 build 命令
+  - 打包生产环境的 dist 文件
+- makeimage
+  - 使用 docker 制作前端镜像，上传到自己的镜像库
+- deploy
+  - 登录部署服务器，执行发布脚本
