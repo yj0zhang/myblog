@@ -73,7 +73,7 @@
 - toValue
   - 在 unref 的基础上，增加了 getter 的规范化
 - toRefs
-  - 将 reactive 对象，转换为普通对象，这个普通对象的每个属性，是对 reactive 对象的 ref
+  - 将 reactive 对象，转换为普通对象，这个普通对象的每个属性，是对 reactive 对象属性的 ref
 - toRaw
   - 返回 vue 代理的原始对象
 - triggerRef

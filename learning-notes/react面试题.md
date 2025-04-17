@@ -444,13 +444,15 @@ dom 是一颗树，stack reconciler 是使用递归方式遍历这颗树的，�
 ### commitWork
 
 - commitBeforeMutationEffect
+  - 执行副作用的卸载清理函数
   - getSnapshotBeforeUpdate 生命周期
 - commitMutationEffects
   - 处理 effectList
-  - 更新界面
+  - 把 dom 更新应用到浏览器
   - 把 workInProgress Fiber 切换成 current Fiber
 - commitLayoutEffects
-  - 执行 useLayoutEffect, componentDidMount, componentDidUpdate
+  - 同步执行 useLayoutEffect, componentDidMount, componentDidUpdate
+- scheduleEffectWork 异步调度 useEffect
 
 ## 什么是闭包陷阱？怎么解决？
 
@@ -689,12 +691,12 @@ return <BrowserRouter>
 - PureComponent，用于类组件，自动对 props 和 state 进行浅比较（也可自定义渲染），避免不必要的渲染
 - 在修改引用类型的状态时，避免直接修改状态，需要通过 setState 设置一个新的状态
 - 使用 useCallback 和 useMemo
+- 使用 useEffect 的销毁方法，清理副作用
 - 使用 key 优化列表
 - 避免内联函数和对象，在 jsx 中直接定义函数或者对象，会导致每次渲染时创建新的引用，导致不必要的渲染
 - 使用 Context 时，如果 Provider 的值发生变化，所有消费该 Context 的组件都会重新渲染，
   - 需要拆分成小的 Context
-  - 使用 useMemo 或 usseCallback 优化 Context 的值
-- 使用 useEffect 的销毁方法，清理副作用
+  - 使用 useMemo 或 useCallback 优化 Context 的值
 - 渲染长列表时，使用虚拟滚动技术
 - 懒加载组件，React.lazy 和 Suspense
 - 避免不必要的 dom 操作，使用 css 动画代替 js 动画
