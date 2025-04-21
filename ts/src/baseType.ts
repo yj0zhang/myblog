@@ -27,7 +27,7 @@ const baseType = function () {
 
     //元组 tuple
     //元组与数组的区别是，元组限制了特定位置的类型，顺序、位置和数量都必须与类型定义一致
-    let tuple1: [string, number] = ['1', 1]
+    let tuple1: [string, number] = ['1', 1];
     // let tuple2: [string, number] = ['1'];//数量不对
     // let tuple3: [string, number] = [2, 1];//类型不对
     //可以增加string, number类型的元素，但是访问时会报错
@@ -93,15 +93,15 @@ const baseType = function () {
     // true ['t','r','u','e']
     function toArray(val: number | string | boolean) {
         if (typeof val === 'number') {
-            return val.toString().split('').map(Number)
+            return val.toString().split('').map(Number);
         }
         if (typeof val === 'string') {
-            return val.split('')
+            return val.split('');
         }
         if (typeof val === 'boolean') {
-            return val.toString().split('')
+            return val.toString().split('');
         }
-        //如果上述条件没有枚举玩，这里会报错
+        //如果上述条件没有枚举完，这里会报错
         const n: never = val;
         // 可以改为一个校验方法
         validateCheck(val);//代码的完整性保护
@@ -128,5 +128,5 @@ const baseType = function () {
     const b = BigInt(1);//需要把target改为"ES2020"之后，或者添加lib: ["ES2020", "DOM"]，（console.log属于DOM）
 
 
-}
-export default baseType
+};
+export default baseType;

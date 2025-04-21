@@ -225,8 +225,8 @@ class AsyncState extends React.Component {
   state = {
     count: 0,
   };
-  //React有个概念叫batchUpdate（批量更新）
-  //在17中，settimeout不在批量更新队列中，它是落后于外部的批处理的
+  //React有个概念叫batchUpdate（异步批量更新）
+  //在17中，settimeout不在批量更新队列中，它是同步执行的
   handleClick = () => {
     // 版本17中输出的都是0，是异步的
     // 版本18中输出的都是0，是异步的
@@ -683,7 +683,7 @@ return <BrowserRouter>
 - promise 是微任务，还是会占用当前帧的时间
 - setTimeout 如果处于递归循环的话，会有 4ms 的延迟
 - requestIdleCallback 有兼容性问题，和 50ms 渲染问题
-  综上，用 messageChannel 交给下一个宏任务
+  综上，不占用当前帧的时间，且无副作用的，就是用 messageChannel 交给下一个宏任务
 
 ## react 性能优化的方式
 
@@ -713,7 +713,7 @@ return <BrowserRouter>
 ## react-redux 中的 connect 的意义是什么？它做了哪些事情
 
 - 封装对状态的读写，同时把读写方法传递给需要 connect 的组件（c），在 connect 内部，会订阅状态的改变，通过 setState 主动触发组件 c 的渲染。
-  - 封装天状态的读写方法
+  - 封装对状态的读写方法
     - 根据`mapStateToProps`和`mapDispatchToProps`拿到状态和操作状态的方法，传递给组件 c
   - 订阅状态的更新
     - 在恰当的时候，渲染组件 c：当`mapStateToProps`改变，旧订阅，当状态更新时，判断根据`mapStateToProps`拿到的新数据是否不同，如果不同，更新组件 c

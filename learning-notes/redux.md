@@ -14,6 +14,8 @@
   - 纯函数，接收 action 和旧的 state，返回新的 state
 - store
   - 保存应用的状态，提供 dispatch、getState 等方法
+- subscribe
+  - 订阅状态更新
 - middleware
   - 中间件扩展，执行时机在 action 发起后，到达 reducer 之前
 

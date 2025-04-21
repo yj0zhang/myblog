@@ -1,8 +1,26 @@
 # vue3
 
+## vue3 的响应式原理
+
+有四大部份：
+
+- reactive， 使用 proxy 语法，实现对象的深层代理，在 get 和 set 的时候，分别使用 track 和 trigger 收集 effect、触发 effect 的执行
+- track 时，使用全局 weakMap 记录响应式对象与副作用的关联关系
+- trigger 时，根据全局 weakMap 记录的依赖，执行副作用
+- effect 上记录依赖的属性
+
+## vue2 的响应式原理
+
+- 数据劫持，defineProperty，get 时收集依赖，set 时派发更新
+- Observer，递归监测对象，用 walk 方法，访问对象的每个属性，触发数据劫持的 get，收集
+- Watcher，相当于 vue3 的 effect
+- 数组的方法，通过拦截数组原型上的方法实现响应式
+
 ## vue3 和 vue2 的区别
 
 - 响应式实现原理不同，vue2 使用 defineProperty，vue3 使用 proxy
+  - vue3 对数组不需要特殊处理，vue2 需要拦截数组原型方法实现响应式
+  - 对响应式对象新增属性，vue2 需要用 Vue.set，vue3 直接添加
 - vue3 模版可以支持多个根节点，但是与单个跟节点有些区别：
   - class、style、v-on 的自动继承上，
     - vue2 会自动继承到根节点，

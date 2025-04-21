@@ -106,10 +106,11 @@ deploy_stable_commission_job:
 
 ## cicd 过程示例
 
-- lint
-  - 在发起 merge_request 或者 merge_request 更新的时候，执行这一节点
+- lint （发起 merge_request 或者 merge_request 更新的时候）
   - 使用 git diff 命令，与主分枝对比，找出本次更新修改的所有文件
   - 把修改的文件用 eslint 命令检查一遍
+  - lint 结果发送企业微信消息，失败的话，开发去改，成功的话，准备 codereview 合并代码
+- 代码合并后：
 - build
   - 安装依赖包
   - 执行 build 命令

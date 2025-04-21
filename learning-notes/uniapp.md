@@ -62,11 +62,11 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 ## uniapp 的路由导航如何实现
 
 - 组件 navigator
-- 接口 uni.navigateTo、uni.reLaunch 等
+- 接口 uni.navigateTo、uni.reLaunch、uni.redirectTo、uni.switchTab 等
 
 ## uniapp 如何调用原生功能？
 
-通过封装好的 api
+通过封装好的 api，分为几大类：媒体、设备、位置、文件等
 
 - uni.chooseImage
 - uni.getLocation

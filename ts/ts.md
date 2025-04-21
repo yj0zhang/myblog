@@ -19,7 +19,7 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
 - js 文件可以直接右键'run code'执行
 - ts 文件需要安装 ts-node：`npm install ts-node -g`
 
-## 通过构建工具讲代码转成 js（webpack，rollup，esbuild...）
+## 通过构建工具将代码转成 js（webpack，rollup，esbuild...）
 
 - 使用 rullup [rollup](./rollup.config.js) 和 [tsconfig](./tsconfig.json)
 - 再创建一个[index.html](./dist/index.html)，在浏览器中运行
@@ -48,9 +48,15 @@ ts 是用来检测类型的，只在开发时生效，在运行时没有类型�
 
 ## 类型断言
 
+as
+<number>str
+
 [typeAsserts](./src/typeAsserts.ts)
 
 ## 函数类型
+
+type f1 = (a:number,b:string)=>string|number;
+type f2 = {(a:number): number}
 
 [functionType](./src/functionType.ts)
 

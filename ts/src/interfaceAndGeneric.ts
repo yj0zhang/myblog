@@ -17,7 +17,7 @@ export default function () {
     let person: IPerson = {
         username: 'abc',
         age: 20
-    }
+    };
     interface IDriver extends IPerson {
         driveAge: number;
     }
@@ -25,7 +25,7 @@ export default function () {
         username: 'abc',
         age: 30,
         driveAge: 4
-    }
+    };
     // 赋值的时候，会产生兼容性，子类型可以赋值给父类型
     person = driver;
     // driver = person;//反过来不行
@@ -36,10 +36,10 @@ export default function () {
         (): number;
         count: number;
     }
-    // 函数有类型定义的时候，只能用const声明，表示此值不能背修改
+    // 函数有类型定义的时候，只能用const声明，表示此值不能被修改
     const counter: ICounter = () => {
-        return counter.count++
-    }
+        return counter.count++;
+    };
     counter.count = 0;
 
 
@@ -55,7 +55,7 @@ export default function () {
     // 或者扩展一个新类型：
     interface IVegetable extends IVeg {
         color?: string;
-        [key: string | number | symbol]: any
+        [key: string | number | symbol]: any;
     }
     const veg: IVegetable = {
         name: '西红柿',
@@ -64,7 +64,7 @@ export default function () {
         a: 1,
         0: 1,
         [Symbol()]: 'a'
-    }
+    };
     interface IArray {
         [key: number]: any;
     }
@@ -103,7 +103,7 @@ export default function () {
         speak: () => void;// 这是实例方法
     }
     interface SpeakChinese {
-        speakChinese(): void
+        speakChinese(): void;
     }
     class Speaker implements Speakable, SpeakChinese {
         public speak: () => void;
@@ -118,17 +118,17 @@ export default function () {
 
     // 如何表示函数的参数是一个类
     class Dog {
-        public a: number = 1
+        public a: number = 1;
     }
     class Cat {
-        public a: number = 1
-        public b: number = 1
+        public a: number = 1;
+        public b: number = 1;
     }
     {
         // 类类型，不能描述类本身，描述的是实例
         // 类的类型，需要通过typeof来取
         function createInstance(clazz: typeof Dog) {
-            return new clazz()
+            return new clazz();
         }
         const instance1 = createInstance(Dog);
         // instance2也是Dog类型（鸭子类型检测）
@@ -141,10 +141,10 @@ export default function () {
         //     new(): T
         // }
         // 用type描述构造函数
-        type IClazz<T> = new () => T
+        type IClazz<T> = new () => T;
         // type IClazz<T> = new (name: string) => T
         function createInstance<T>(clazz: IClazz<T>) {
-            return new clazz()
+            return new clazz();
         }
         // function createInstance<T>(clazz: new () => T) {
         //     return new clazz()
@@ -168,7 +168,7 @@ export default function () {
 
     // }
     function createArr<T>(times: number, val: T) {
-        return Array.from({ length: times }).fill(val) as T[]
+        return Array.from({ length: times }).fill(val) as T[];
     }
 
     let arr3 = createArr<string>(2, 'a');
@@ -176,7 +176,7 @@ export default function () {
 
     //值的交换
     function swap<T, K>(tuple: [T, K]): [K, T] {
-        return [tuple[1], tuple[0]]
+        return [tuple[1], tuple[0]];
     }
     const r = swap([1, 'a']);
 
@@ -190,11 +190,11 @@ export default function () {
     type IForEach = <T>(arr: T[], cb: ICallback<T>) => void;
     const forEach: IForEach = (arr, cb) => {
         for (let i = 0; i < arr.length; i++) {
-            cb(arr[i])
+            cb(arr[i]);
         }
-    }
+    };
     forEach(['a', 2, 3], function (val) {
-        console.log(val)
+        console.log(val);
     });
 
     {
@@ -216,7 +216,7 @@ export default function () {
                     username: 'a',
                     token: 'a'
                 }
-            }
+            };
         }
         let r = login();
 
@@ -229,7 +229,7 @@ export default function () {
         //泛型是用户传递的类型，但在使用泛型的时候，都要添加泛型约束
         function getVal<T>(val: T): T {
             // return val + val;//在使用泛型的时候，不能直接做运算，因为无法保证泛型的结果
-            return val
+            return val;
         }
         getVal(1);
 
@@ -238,11 +238,11 @@ export default function () {
         //extends约束T需要是string | number的子类型
         function getVal1<T extends string | number>(val: T): T {
             // return val + val;//在使用泛型的时候，不能直接做运算，因为无法保证泛型的结果
-            return val
+            return val;
         }
         //getVal1限制泛型只能是string | number
         // getVal1(true)
-        getVal1(1)
+        getVal1(1);
     }
 
     {
@@ -251,7 +251,7 @@ export default function () {
         class MyList<T extends string | number> {
             private arr: T[] = [];
             add(val: T) {
-                this.arr.push(val)
+                this.arr.push(val);
             };
             getMax(): T {
                 //业务逻辑
@@ -259,7 +259,7 @@ export default function () {
             }
         }
 
-        const list = new MyList<number>
+        const list = new MyList<number>;
         list.add(1);
         list.add(100);
         list.add(200);
