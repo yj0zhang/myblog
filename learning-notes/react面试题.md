@@ -319,7 +319,7 @@ class AsyncState extends React.Component {
 hoc(High-Order Component) 高阶组件，是 react 中复用组件逻辑的高级技术，它是一个函数，接收一个组件作为参数，返回一个新组件；适用于复用组件，增强组件功能，渲染劫持等。
 
 - 日志输出
-- 权限校验
+- 权限校验（路由的权限校验）
 
 ## 如何实现一个 withRouter
 
@@ -719,6 +719,7 @@ return <BrowserRouter>
   - 需要拆分成小的 Context
   - 使用 useMemo 或 useCallback 优化 Context 的值
 - 渲染长列表时，使用虚拟滚动技术
+- 树结构的组件，使用懒加载
 - 懒加载组件，React.lazy 和 Suspense
 - 避免不必要的 dom 操作，使用 css 动画代替 js 动画
 - 代码分割

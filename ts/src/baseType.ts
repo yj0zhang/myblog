@@ -12,9 +12,9 @@ const baseType = function () {
 
 
     // 父子关系：子集可以赋值给父集
-    let s1: string = 'a';
+    let s1: string = 'a';// 字面量赋值给基础类型
     // let s2: string = new String('a');//new String是class类型，不能赋值给string类型
-    let s3: String = '1';//子集可以赋值给父集
+    let s3: String = '1';//子集可以赋值给父集，字面量赋值给包装类型
     let s4: String = new String('1');
 
     //数组

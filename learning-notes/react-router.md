@@ -76,11 +76,11 @@ path 可以用通配符，element 是 404 组件
 
 # react-router 提供了哪些 hook
 
-- useParams 获取路由参数
-- useNavigate 编程式导航
-- useLocation 访问当前 location 对象
-- useSearchParams 处理 URL 查询参数
 - useRoutes 用 JS 对象形式定义路由
+- useLocation 访问当前 location 对象
+- useNavigate 编程式导航
+- useParams 获取路由参数
+- useSearchParams 处理 URL 查询参数
 
 # 什么是路由守卫？如何在 react router 中实现？
 

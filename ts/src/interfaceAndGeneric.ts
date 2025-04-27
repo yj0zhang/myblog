@@ -7,6 +7,8 @@ export default function () {
     // 一般情况下，描述对象，类，用interface更多
     // type可以快速声明类型： 联合类型，工具类型 只能用type
     // type 不能重名，interface可以
+    // interface可以用extends语法扩展其他interface
+    // interface可以被class实现
     // 开发中，能用type就用type，复杂类型采用type
 
     // 接口可以描述对象结构

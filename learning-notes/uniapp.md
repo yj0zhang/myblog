@@ -70,6 +70,8 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 - uni.chooseImage
 - uni.getLocation
+- uni.saveImageToPhotosAlbum
+- uni.openSetting
 
 ## 如何实现移动端响应式布局
 
