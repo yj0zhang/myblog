@@ -18,7 +18,9 @@
 
 ## react 组件有哪些声明方式
 
-- 两种方式：函数式组件和类组件，函数式组件用 hook 管理状态，返回 jsx 作为渲染模版；类组件的状态是实例属性，使用返回 jsx 的 render 方法渲染模版
+- 两种方式：函数式组件和类组件
+  - 函数式组件用 hook 管理状态，返回 jsx 作为渲染模版，没有生命周期钩子（可以使用 useEffect 模拟生命周期）；
+  - 类组件的状态是实例属性，使用返回 jsx 的 render 方法渲染模版，有生命周期钩子
 - 函数式组件
   ```js
   import React, {Component} from 'react';
@@ -64,6 +66,8 @@
 - useState
 - useRef
   - 引用一个可变的对象，返回{current: value}
+- useInsertionEffect
+  - 比 useLayoutEffect 的时机提前一点，也是同步的，主要用于 css-in-js 库
 - useLayoutEffect
   - 比 useEffect 的时机提前一点，是同步的
 - useEffect
@@ -301,8 +305,10 @@ class AsyncState extends React.Component {
 
 ### useInsertionEffect
 
-- useInsertionEffect 比 useLayoutEffect 更早，useInsertionEffect 是在 DOM 更新前执行的。
+- useInsertionEffect 是在 DOM 更新前执行的。
 - 本质上 useInsertionEffect 主要解决 css-in-js 在渲染中注入样式的问题，确保在 useLayoutEffect 之前插入样式规则。
+
+顺序： useInsertionEffect -> DOM 更新 ->useLayoutEffect -> 视图绘制 -> useEffect
 
 ### 从执行时机来看，哪个和 componentDidMount、componentDidUpdate 更接近
 
@@ -378,7 +384,15 @@ render props 是一个函数属性，通常命名为 render，可以把父组件
 ## 什么是 Fiber
 
 - Fiber 是 react17.x 引入的一个数据结构，本质上是为了把 stack reconciler 替换为 fiber reconsiler
-- 本质是一个对象
+- 每个 React 元素都对应一个 Fiber 节点，本质是一个对象
+- 核心特性是：
+  - 可中断工作，使用时间切片切分任务
+  - 双缓存机制
+  - 链表结构
+- Fiber 让 react 可以：
+  - 跳过不必要的渲染：通过优先级调度
+  - 批量更新：合并多个 setState 调用
+  - 后台预渲染：在不阻塞主线程的情况下准备更新
 
 ```js
 const FiberNode = {
@@ -390,10 +404,10 @@ const FiberNode = {
     child,//指向第一个子节点
     sibling,//指向右边的第一个兄弟节点
     //判断是否要更新的属性
-    pendingProps,
-    memorizeProps,
-    updateQueue,
-    memorizedState,
+    pendingProps,//新props
+    memorizeProps,//当前props
+    updateQueue,//状态更新队列
+    memorizedState,//当前state
     //effect副作用链
     effectTag,
     nextEffect,
@@ -403,6 +417,9 @@ const FiberNode = {
     alternate,
     //对应真实的DOM节点
     stateNode,
+    //调度优先级
+    Lanes,
+    childLanes
 }
 ```
 
@@ -424,6 +441,8 @@ dom 是一颗树，stack reconciler 是使用递归方式遍历这颗树的，�
 - react 调和的过程，就是 current fiber 和 v-dom 对比，生成子组件的 workInProgresss fiber 的过程
 
 ## react 更新的流程
+
+分为 render 阶段和 commit 阶段，render 阶段是异步可中断的
 
 ### beginWork
 
@@ -683,7 +702,9 @@ return <BrowserRouter>
 - promise 是微任务，还是会占用当前帧的时间
 - setTimeout 如果处于递归循环的话，会有 4ms 的延迟
 - requestIdleCallback 有兼容性问题，和 50ms 渲染问题
-  综上，不占用当前帧的时间，且无副作用的，就是用 messageChannel 交给下一个宏任务
+  - 即使浏览器处于空闲状态，单个 requestIdleCallback 任务的执行时间也不应超过 50ms。如果超过这个时间，浏览器可能会中断任务执行以确保主线程不被长时间阻塞。
+  - requestIdleCallback 执行时间不可靠，最多 50ms，可能不到
+    综上，不占用当前帧的时间，且无副作用的，就是用 messageChannel 交给下一个宏任务
 
 ## react 性能优化的方式
 
@@ -705,15 +726,7 @@ return <BrowserRouter>
   - 路由懒加载，结合 React.lazy、Suspense 和 React router 实现路由级别的代码分割
 - Tree Shaking
 - 压缩图片和资源
-- 性能分析工具<!-- todo -->
+- 性能分析工具
   - React DevTools Profiler: 分析组件的渲染性能
   - Chrome DevTools Performance: 分析 js 执行性能
   - Lighthouse: 分析应用的加载性能
-
-## react-redux 中的 connect 的意义是什么？它做了哪些事情
-
-- 封装对状态的读写，同时把读写方法传递给需要 connect 的组件（c），在 connect 内部，会订阅状态的改变，通过 setState 主动触发组件 c 的渲染。
-  - 封装对状态的读写方法
-    - 根据`mapStateToProps`和`mapDispatchToProps`拿到状态和操作状态的方法，传递给组件 c
-  - 订阅状态的更新
-    - 在恰当的时候，渲染组件 c：当`mapStateToProps`改变，旧订阅，当状态更新时，判断根据`mapStateToProps`拿到的新数据是否不同，如果不同，更新组件 c

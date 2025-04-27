@@ -6,7 +6,7 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 - 根据不同平台编译为不同的格式
 - 条件编译处理平台差异
-- 统一 api 调用，底层适配不同平台实现
+- 提供统一 api 调用，api 底层适配不同平台实现
 
 ## uniapp 项目结构
 
@@ -15,7 +15,7 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
     - index.vue
 - static 静态文件
 - components 公共组件
-- page.json 页面路由和样式配置
+- page.json 页面路由和样式配置、分包配置
 - manifest.json 应用平台配置
 - App.vue 入口组件
 - main.js 入口文件
@@ -66,7 +66,7 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 ## uniapp 如何调用原生功能？
 
-通过封装好的 api，分为几大类：媒体、设备、位置、文件等
+通过封装好的 api，分为几大类：媒体、文件、设备、位置等
 
 - uni.chooseImage
 - uni.getLocation
@@ -75,6 +75,8 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 - flexbox 弹性布局
 - grid 网格布局
+  - 通过 grid-template-colum 属性，设置网格，比如：repeat(3,1fr)代表每行 3 项，1fr 代表每项均分空间
+  - 同时可以设置此属性的 min 和 max，限制每一项的最小和最大尺寸
 - rpx 单位，rpx 是小程序中的单位，1rpx 是屏幕宽度的 1/750，在配置 pageOrientation 后可支持横屏模式
 - rem/em 基于根/父元素字体大小
 - vw/vh 视窗单位
@@ -86,7 +88,7 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 - 通过 wx.login 接口，获取到小程序登录码 code
 - 把 code 发送到自己的服务端
-- 服务端用 code、appid、appappsecret 去微信换取 session_key 和 openid
+- 服务端用 code、appid、appsecret 去微信换取 session_key 和 openid
 - 用换取到的 session_key 和 openid 注册用户或者登录，生成 token 给到前端
 - 前端把 token 带入到后续的请求头中
 
@@ -118,11 +120,12 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 - 预加载分包的方法
   - 可以在 page.json 中配置预加载分包规则 preloadRule
   - 小程序可以在代码中用 uniapp 的 api 预先加载：uni.preloadPage
-  - 其他端可以通过请求分包中的一个小的资源来出发分包下载，模拟与加载
+  - 其他端可以通过请求分包中的一个小的资源来出发分包下载，模拟预加载
 
 ## uniapp 的性能优化有哪些
 
 - 使用 scroll-view 分页加载大数据
+- 使用虚拟滚动插件加载大数据
 - 分包加载
 - 图片
   - 压缩 使用 compressorjs 压缩

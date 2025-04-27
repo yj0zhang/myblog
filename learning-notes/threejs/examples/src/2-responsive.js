@@ -5,7 +5,7 @@ export function resizeHandle(renderer, camera) {
   camera.updateProjectionMatrix();
 }
 // 解决立方体锯齿化的问题
-export function resizeRendererToDispplaySize(renderer) {
+export function resizeRendererToDisplaySize(renderer) {
   // 检查canvas的内部尺寸（分辨率，通常被叫做绘图缓冲区），和canvas的显示尺寸是否一致，如果绘图缓冲区小，会锯齿化
   const canvas = renderer.domElement;
   const width = canvas.clientWidth;

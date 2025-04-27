@@ -31,7 +31,7 @@
 # 你用过哪些 middleware？
 
 - redux-thunk 用于处理异步 action
-  - redux-thunk 允许 action 是函数，当 action 是函数时，参数是 dispatch，可以实现异步调用 dispatch
+  - redux-thunk 允许 action 是函数，函数接收参数 dispatch，可以在任意地方使用
 - redux-logger 日志记录
 
 # 为什么 reducer 必须是纯函数
@@ -47,7 +47,9 @@
 connect 是高阶组件，封装了如下功能
 
 - 将 store 中的 state 和 action 作为 props 传递给子组件
+  - 根据`mapStateToProps`和`mapDispatchToProps`拿到状态和操作状态的方法，传递给子组件
 - 自动处理 store 的订阅和取消订阅
+  - 在恰当的时候，渲染子组件：当`mapStateToProps`改变，旧订阅，当状态更新时，判断根据`mapStateToProps`拿到的新数据是否不同，如果不同，更新子组件
 
 # useSelector 和 useDispatch 的作用？
 

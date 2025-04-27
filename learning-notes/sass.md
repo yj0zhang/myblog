@@ -23,6 +23,8 @@
 }
 ```
 
+@mixin 可以结合控制语句@if 等 实现响应式和主题色
+
 # @extend
 
 继承另一个选择器的样式
@@ -42,6 +44,27 @@
 - @for
 - @each
 - @while
+
+在 mixin 中使用 if
+
+```scss
+@mixin theme-colors($theme) {
+  @if $theme == light {
+    background-color: #fff;
+    color: #000;
+  } @else if $theme == dark {
+    background-color: #000;
+    color: #fff;
+  } @else {
+    background-color: grey;
+    color: #000;
+  }
+}
+
+.container {
+  @include theme-colors(dark);
+}
+```
 
 # sass 中的函数
 

@@ -11,26 +11,27 @@
 
 ## vue2 的响应式原理
 
-- 数据劫持，defineProperty，get 时收集依赖，set 时派发更新
+- 数据劫持+观察者模式，使用 Object.defineProperty，拦截对象属性的 get 和 set 操作，get 时收集依赖(watcher)，set 时派发更新(执行 watcher)
+  - 这种方式对于引用对象新增的属性无效，所以 vue 暴露出了一个静态 api: $set，新增属性时，使用这个 api，可以实现响应式
+  - 数组操作也无法通过数据劫持实现响应式，vue 通过拦截数组原型上的方法实现响应式
 - Observer，递归监测对象，用 walk 方法，访问对象的每个属性，触发数据劫持的 get，收集
 - Watcher，相当于 vue3 的 effect
-- 数组的方法，通过拦截数组原型上的方法实现响应式
 
 ## vue3 和 vue2 的区别
 
-- 响应式实现原理不同，vue2 使用 defineProperty，vue3 使用 proxy
+- 响应式实现原理不同，vue2 使用数据劫持+观察者模式，vue3 使用 proxy+观察者模式
   - vue3 对数组不需要特殊处理，vue2 需要拦截数组原型方法实现响应式
   - 对响应式对象新增属性，vue2 需要用 Vue.set，vue3 直接添加
-- vue3 模版可以支持多个根节点，但是与单个跟节点有些区别：
-  - class、style、v-on 的自动继承上，
-    - vue2 会自动继承到根节点，
-    - vue3 多根节点需要手动指定继承到某个节点，否则不继承，且开发环境会有警告
 - patch 方法的优化
   - 静态节点提升到全局，不重新创建和渲染
   - 设置 patchFlag 标记标签，仅对比可能变化的部份
   - 优化对比算法：最长递增子序列，在节点顺序变化时，找出移动节点最小的方案
-- 组合式 api，setup 入口，可以更加灵活的组织业务逻辑
 - vue3 支持 typescript，提供更好的类型判断
+- vue3 模版可以支持多个根节点，但是与单个跟节点有些区别：
+  - class、style、v-on 的自动继承上，
+    - vue2 会自动继承到根节点，
+    - vue3 多根节点需要手动指定继承到某个节点，否则不继承，且开发环境会有警告
+- 组合式 api，setup 入口，可以更加灵活的组织业务逻辑
 - vue3 生命周期有些变化：destroy 改成了 unmount，setup 入口下不需要 create 钩子
 - setup 模式下，父组件不能通过 ref 访问子组件的方法，只能通过 expose 来暴露
 - 新增了组件 teleport 和 suspense
@@ -53,7 +54,7 @@
   - react 使用 hooks
 - 性能优化
   - vue3 自动追踪依赖，减少无效渲染
-  - react 需要 react.memo、userMemo 等方法手动优化
+  - react 需要开发时使用 react.memo、userMemo 等方法手动优化
 
 # vuex4
 
@@ -84,19 +85,19 @@
 - shallowReactive
   - 浅层响应式
 - isRef
-- unref
-  - 获取 ref.vue
+- isReactive
 - toRef
   - 把原数据变成 ref
-- toValue
-  - 在 unref 的基础上，增加了 getter 的规范化
 - toRefs
   - 将 reactive 对象，转换为普通对象，这个普通对象的每个属性，是对 reactive 对象属性的 ref
 - toRaw
   - 返回 vue 代理的原始对象
+- unref
+  - 获取 ref.vue
+- toValue
+  - 在 unref 的基础上，增加了 getter 的规范化
 - triggerRef
   - 触发某个 ref 的副作用
-- isReactive
 - effect
 - computed
 - watch

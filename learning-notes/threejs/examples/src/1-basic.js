@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { resizeRendererToDispplaySize, resizeHandle } from "./2-responsive";
+import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
@@ -8,11 +8,11 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
 const fov = 75, //视野范围
   aspect = 2, //画布的宽高比
   near = 0.1,
-  far = 5; //near、far表示近平面和远平面，在这两个外部的会被裁剪
+  far = 50; //near、far表示近平面和远平面，在这两个外部的会被裁剪
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 // 摄像机默认看向z轴的负方向，上方朝向Y轴的正方向，默认位置在原点，
 // 把摄像机向z轴正向移动2坐标，可以看到原点处
-camera.position.z = 2;
+camera.position.z = 15;
 
 // 创建场景
 const scene = new THREE.Scene();
@@ -37,12 +37,26 @@ const cubes = [
 
 cubes.forEach((c) => scene.add(c));
 
+{
+  // 画线
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+  //定义顶点
+  const points = [
+    new THREE.Vector3(4, 0, 0),
+    new THREE.Vector3(7, 10, 0),
+    new THREE.Vector3(10, 0, 0),
+  ];
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const lineMesh = new THREE.Line(geometry, lineMaterial);
+  scene.add(lineMesh);
+}
+
 // 为了让立方体动起来，使用requestAnimationFrame，每一帧旋转一点
 function render(time) {
   time *= 0.001;
 
   // 响应式
-  if (resizeRendererToDispplaySize(renderer)) {
+  if (resizeRendererToDisplaySize(renderer)) {
     resizeHandle(renderer, camera);
   }
   cubes.forEach((cube, ndx) => {
