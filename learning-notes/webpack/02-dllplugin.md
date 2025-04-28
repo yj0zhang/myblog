@@ -1,6 +1,7 @@
-webpack4中新增了DllPlugin，用来打包那些 万年不改的依赖库，需要现在本地运行dll配置，生成dll文件
+webpack4 中新增了 DllPlugin，用来打包那些 万年不改的依赖库，需要现在本地运行 dll 配置，生成 dll 文件
 
-dll.config像正常的配置一样，有入口、出口，modules和plugins
+dll.config 像正常的配置一样，有 entry、output，modules 和 plugins
+
 ```js
 {
   mode: "production",
@@ -62,12 +63,15 @@ dll.config像正常的配置一样，有入口、出口，modules和plugins
 };
 ```
 
-在base中使用：
-首先需要引入bundle-config
+在 base 中使用：
+首先需要引入 bundle-config
+
 ```js
-const bundleConfig = require("../vendor/bundle-config.json")//调入生成的的路径json
+const bundleConfig = require("../vendor/bundle-config.json"); //调入生成的的路径json
 ```
-然后根据dll的入口，引用：
+
+然后根据 dll 的入口，引用：
+
 ```js
     new webpack.DllReferencePlugin({
       manifest: require("../vendor/vue-manifest.json"),
@@ -87,9 +91,14 @@ const bundleConfig = require("../vendor/bundle-config.json")//调入生成的的
       env: "development",
     }),
 ```
-接着在index.html中引用：
+
+接着在 index.html 中引用：
+
 ```html
-    <link rel="stylesheet" href="./vendor/<%= htmlWebpackPlugin.options.elementCss %>">
-    <script src="./vendor/<%= htmlWebpackPlugin.options.vueJs %>"></script>
-    <script src="./vendor/<%= htmlWebpackPlugin.options.elementJs %>"></script>
+<link
+  rel="stylesheet"
+  href="./vendor/<%= htmlWebpackPlugin.options.elementCss %>"
+/>
+<script src="./vendor/<%= htmlWebpackPlugin.options.vueJs %>"></script>
+<script src="./vendor/<%= htmlWebpackPlugin.options.elementJs %>"></script>
 ```

@@ -11,7 +11,7 @@ react-router 是 react 应用中实现客户端路由的库，作用是保持 UI
 # react-router v6 相比于 v5 有哪些重大变化？
 
 - <Switch>替换为<Routes>
-- useRoutes 支持基于 JS 对象配置路由
+- 添加 useRoutes，支持基于 JS 对象配置路由
 - 路由定义方式更简洁
 - useNavigate 替换 useHistory
   - 新增了导航配置

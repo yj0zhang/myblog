@@ -4,7 +4,7 @@
 
 有四大部份：
 
-- reactive， 使用 proxy 语法，实现对象的深层代理，在 get、has(in)、 ownKeys(getOwnPropertyNames,getOwnPropertySymbols) 和 set、deleteProperty(delete) 的时候，分别使用 track 和 trigger 收集 effect、触发 effect 的执行
+- reactive， 使用 proxy 语法，实现对象的深层代理，在 get、has(in)、 ownKeys(getOwnPropertyNames,getOwnPropertySymbols)操作时，使用 track 方法，追踪依赖，在全局 weakMap 变量中存储响应式对象和副作用依赖的关系，在 set、deleteProperty(delete)操作时，用 trigger 方法触发 effect 的执行
 - track 时，使用全局 weakMap 记录响应式对象与副作用的关联关系
 - trigger 时，根据全局 weakMap 记录的依赖，执行副作用
 - effect 上记录依赖的属性

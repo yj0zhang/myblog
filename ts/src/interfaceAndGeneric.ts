@@ -164,7 +164,7 @@ export default function () {
 
     // ------------------- generic 泛型 -------------------
     // 泛型可以用于 函数、接口、类、type
-    // 刚开始类型不确定，使用的时候才能确定
+    // 定义时类型不确定，使用的时候才能确定
 
     // const createArr = <T>(times: number, val: T) => {
 

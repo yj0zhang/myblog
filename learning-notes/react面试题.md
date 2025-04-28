@@ -230,7 +230,7 @@ class AsyncState extends React.Component {
     count: 0,
   };
   //React有个概念叫batchUpdate（异步批量更新）
-  //在17中，settimeout不在批量更新队列中，它是同步执行的
+  //在17中，异步批量更新不会处理settimeout和setinterval，所以它是同步执行的
   handleClick = () => {
     // 版本17中输出的都是0，是异步的
     // 版本18中输出的都是0，是异步的
@@ -446,9 +446,9 @@ dom 是一颗树，stack reconciler 是使用递归方式遍历这颗树的，�
 
 ### beginWork
 
-- 使用 v-dom 和 current fiber 去生成子节点的 workInProgress Fiber
+- 使用 v-dom 和 current fiber 去生成子节点的 `workInProgress Fiber`
   - 期间会执行函数组件，类组件，diff 子节点
-  - 得到需要变更的节点，打上 effectTag
+  - 得到需要变更的节点，打上` effectTag`
     - 增 palcement 0010
     - 删 deletion 1000
     - 改 update 0100
@@ -457,8 +457,8 @@ dom 是一颗树，stack reconciler 是使用递归方式遍历这颗树的，�
 ### completeWork
 
 - 向上走
-- 把所有有 effectTag 的元素，串联成一个 effectList（从上到下）
-- 在内存中，构建真实 DOM，不挂载在界面上
+- 把所有有 effectTag 的元素，串联成一个 `effectList`（从上到下）
+- 在内存中，构建`真实 DOM`，不挂载在界面上
 
 ### commitWork
 
