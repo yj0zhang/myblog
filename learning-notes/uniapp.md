@@ -84,7 +84,21 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 - vw/vh 视窗单位
 - % 百分比，相对于父元素
 - @media 媒体查询策略（尺寸、屏幕方向）
-- 图片响应式：picture 标签包裹 source 标签和 img 标签，根据 source 标签的 media 属性的值来选择合适的图片
+- 图片响应式：
+  - picture 标签包裹 source 标签和 img 标签，根据 source 标签的 media 属性的值来选择合适的图片
+    - <picture>
+        <source media="(max-width: 799px)" srcset="mobile.jpg">
+        <source media="(min-width: 800px)" srcset="desktop.jpg">
+        <img src="desktop.jpg" alt="响应式图片">
+      </picture>
+  - 分辨率切换
+    - <img srcset="small.jpg 480w, medium.jpg 768w, large.jpg 1200w"
+      sizes="(max-width: 600px) 480px, (max-width: 1000px) 768px, 1200px"
+      src="medium.jpg" alt="响应式图片">
+  - 2x 3x 图片
+    - img 标签可以直接用 srcset 属性
+    - css 中，可用媒体查询分辨 devicePixelRadio 属性
+- Tailwind CSS + PostCSS 方案 [TailwindCss+PostCss 样式](./TailwindCss+PostCss.md)
 
 ## 小程序微信授权流程
 

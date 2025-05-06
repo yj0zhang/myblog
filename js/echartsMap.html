@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ECharts 地图与柱状图结合下钻示例</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+    <style>
+        #chart-container {
+            width: 900px;
+            height: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chart-container"></div>
+    <script>
+        // 初始化图表
+        const chartDom = document.getElementById('chart-container');
+        const myChart = echarts.init(chartDom);
+
+        // 模拟数据 - 全国各省数据
+        const provinceData = [
+            { name: '北京', value: 235 },
+            { name: '天津', value: 123 },
+            { name: '上海', value: 345 },
+            { name: '重庆', value: 234 },
+            { name: '河北', value: 156 },
+            { name: '河南', value: 189 },
+            { name: '云南', value: 98 },
+            { name: '辽宁', value: 145 },
+            { name: '黑龙江', value: 112 },
+            { name: '湖南', value: 134 },
+            { name: '安徽', value: 121 },
+            { name: '山东', value: 178 },
+            { name: '新疆', value: 67 },
+            { name: '江苏', value: 201 },
+            { name: '浙江', value: 198 },
+            { name: '江西', value: 109 },
+            { name: '湖北', value: 132 },
+            { name: '广西', value: 87 },
+            { name: '甘肃', value: 76 },
+            { name: '山西', value: 99 },
+            { name: '内蒙古', value: 82 },
+            { name: '陕西', value: 103 },
+            { name: '吉林', value: 94 },
+            { name: '福建', value: 127 },
+            { name: '贵州', value: 78 },
+            { name: '广东', value: 231 },
+            { name: '青海', value: 45 },
+            { name: '西藏', value: 32 },
+            { name: '四川', value: 167 },
+            { name: '宁夏', value: 54 },
+            { name: '海南', value: 65 }
+        ];
+
+        // 模拟数据 - 某省下各市数据（以广东为例）
+        const cityData = {
+            '广东': [
+                { name: '广州市', value: 89 },
+                { name: '深圳市', value: 76 },
+                { name: '珠海市', value: 32 },
+                { name: '汕头市', value: 28 },
+                { name: '佛山市', value: 45 },
+                { name: '韶关市', value: 18 },
+                { name: '湛江市', value: 23 },
+                { name: '肇庆市', value: 19 },
+                { name: '江门市', value: 21 },
+                { name: '茂名市', value: 17 },
+                { name: '惠州市', value: 24 },
+                { name: '梅州市', value: 15 },
+                { name: '汕尾市', value: 12 },
+                { name: '河源市', value: 11 },
+                { name: '阳江市', value: 13 },
+                { name: '清远市', value: 14 },
+                { name: '东莞市', value: 34 },
+                { name: '中山市', value: 22 },
+                { name: '潮州市', value: 16 },
+                { name: '揭阳市', value: 15 },
+                { name: '云浮市', value: 10 }
+            ]
+        };
+
+        // 当前视图状态
+        let currentView = {
+            level: 'province', // 'province' 或 'city'
+            province: null
+        };
+
+        // 初始化选项
+        const initOption = {
+            title: {
+                text: '中国各省份数据统计',
+                subtext: '点击省份可下钻查看市级数据',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: params => {
+                    if (params.seriesType === 'map') {
+                        return `${params.name}<br/>数值: ${params.value || 0}`;
+                    } else if (params.seriesType === 'bar') {
+                        return `${params.name}<br/>数值: ${params.value}`;
+                    }
+                }
+            },
+            visualMap: {
+                min: 0,
+                max: 350,
+                text: ['高', '低'],
+                realtime: false,
+                calculable: true,
+                inRange: {
+                    color: ['#50a3ba', '#eac736', '#d94e5d']
+                },
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            geo: {
+                map: 'china',
+                roam: true,
+                emphasis: {
+                    label: {
+                        show: true
+                    },
+                    itemStyle: {
+                        areaColor: '#f4cccc'
+                    }
+                },
+                itemStyle: {
+                    areaColor: '#eee',
+                    borderColor: '#aaa'
+                }
+            },
+            series: [
+                {
+                    name: '省份数据',
+                    type: 'map',
+                    mapType: 'china',
+                    geoIndex: 0,
+                    data: provinceData,
+                    emphasis: {
+                        label: {
+                            show: true
+                        }
+                    }
+                },
+                {
+                    name: '柱状图',
+                    type: 'bar',
+                    coordinateSystem: 'geo',
+                    symbolSize: 12,
+                    encode: {
+                        x: 'name',
+                        y: 'value'
+                    },
+                    data: provinceData.map(item => ({
+                        ...item,
+                        // 为柱状图数据设置坐标（这里简化处理，实际应该根据经纬度计算）
+                        coord: getProvinceCoord(item.name)
+                    })),
+                    itemStyle: {
+                        color: '#dd6b66'
+                    }
+                }
+            ]
+        };
+
+        // 获取省份的大致中心坐标（简化版，实际项目应使用准确坐标）
+        function getProvinceCoord(provinceName) {
+            // 这里只是示例，实际应用中应该使用准确的经纬度坐标
+            const coordMap = {
+                '北京': [116.4, 39.9],
+                '上海': [121.47, 31.23],
+                '广东': [113.23, 23.16],
+                '江苏': [118.78, 32.04],
+                // 其他省份坐标...
+            };
+            return coordMap[provinceName] || [100, 35];
+        }
+
+        // 获取城市坐标（简化版）
+        function getCityCoord(cityName) {
+            // 实际应用中应该使用准确的经纬度坐标
+            return [113 + Math.random() * 2, 23 + Math.random() * 2];
+        }
+
+        // 下钻到市级视图
+        function drillDownToCity(provinceName) {
+            if (!cityData[provinceName]) {
+                alert('暂无该省份下市级数据');
+                return;
+            }
+
+            currentView = {
+                level: 'city',
+                province: provinceName
+            };
+
+            // 注册市级地图（简化处理，实际项目需要加载具体城市地图数据）
+            echarts.registerMap(provinceName, {
+                type: 'FeatureCollection',
+                features: cityData[provinceName].map(city => ({
+                    type: 'Feature',
+                    properties: {
+                        name: city.name
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: getCityCoord(city.name)
+                    }
+                }))
+            });
+
+            // 更新图表选项
+            myChart.setOption({
+                title: {
+                    text: `${provinceName}各市数据统计`,
+                    subtext: '点击空白处返回省级视图'
+                },
+                geo: {
+                    map: provinceName,
+                    roam: true
+                },
+                series: [
+                    {
+                        name: '市级数据',
+                        type: 'map',
+                        mapType: provinceName,
+                        geoIndex: 0,
+                        data: cityData[provinceName],
+                        emphasis: {
+                            label: {
+                                show: true
+                            }
+                        }
+                    },
+                    {
+                        name: '柱状图',
+                        type: 'bar',
+                        coordinateSystem: 'geo',
+                        data: cityData[provinceName].map(item => ({
+                            ...item,
+                            coord: getCityCoord(item.name)
+                        })),
+                        itemStyle: {
+                            color: '#759aa0'
+                        }
+                    }
+                ]
+            }, true);
+        }
+
+        // 返回省级视图
+        function backToProvince() {
+            currentView = {
+                level: 'province',
+                province: null
+            };
+
+            myChart.setOption(initOption, true);
+        }
+
+        // 初始化图表
+        myChart.setOption(initOption);
+
+        // 监听点击事件
+        myChart.on('click', params => {
+            if (params.componentType === 'series') {
+                if (currentView.level === 'province') {
+                    // 省级视图下点击省份，下钻到市级
+                    if (params.seriesType === 'map') {
+                        drillDownToCity(params.name);
+                    }
+                } else {
+                    // 市级视图下点击空白处返回省级
+                    if (params.seriesType === 'map' && !params.data) {
+                        backToProvince();
+                    }
+                }
+            }
+        });
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', function () {
+            myChart.resize();
+        });
+    </script>
+</body>
+
+</html>
