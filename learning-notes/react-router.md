@@ -185,6 +185,9 @@ const About = React.lazy(() => import("./About"));
 ## vue-router 如何实现滚动恢复？
 
 - 使用类似 react-router 的 scrollBehavior
+  - 当创建一个 Router 实例，你可以提供一个 scrollBehavior 方法，该函数可以返回一个 ScrollToOptions 位置对象
+  - 如果使用 savedPosition，在点击浏览器的“前进/后退”时，就像原生行为一样
+  - 也可滚动到锚点
 
 # 如何实现多语言路由
 

@@ -11,11 +11,20 @@
 
 ## vue2 的响应式原理
 
-- 数据劫持+观察者模式，使用 Object.defineProperty，拦截对象属性的 get 和 set 操作，get 时收集依赖(watcher)，set 时派发更新(执行 watcher)
+- 数据劫持+观察者模式，defineReactive 方法中使用 Object.defineProperty，拦截对象属性的 get 和 set 操作，get 时收集依赖(watcher)，set 时派发更新(执行 watcher)
   - 这种方式对于引用对象新增的属性无效，所以 vue 暴露出了一个静态 api: $set，新增属性时，使用这个 api，可以实现响应式
   - 数组操作也无法通过数据劫持实现响应式，vue 通过拦截数组原型上的方法实现响应式
+- Dep 类，每个响应式属性对应一个 Dep 实例，管理依赖和派发更新
 - Observer，递归监测对象，用 walk 方法，访问对象的每个属性，触发数据劫持的 get，收集
-- Watcher，相当于 vue3 的 effect
+- Watcher，相当于 vue3 的 effect，连接视图与数据的桥梁
+
+## vue2 的 diff 算法
+
+- 同层比较
+- 双端比较
+  优化方法：
+- key 优化
+- 静态节点提升到全局，不重新创建和渲染
 
 ## vue3 和 vue2 的区别
 
@@ -23,9 +32,8 @@
   - vue3 对数组不需要特殊处理，vue2 需要拦截数组原型方法实现响应式
   - 对响应式对象新增属性，vue2 需要用 Vue.set，vue3 直接添加
 - patch 方法的优化
-  - 静态节点提升到全局，不重新创建和渲染
   - 设置 patchFlag 标记标签，仅对比可能变化的部份
-  - 优化对比算法：最长递增子序列，在节点顺序变化时，找出移动节点最小的方案
+  - 优化对比算法：`最长递增子序列`，在节点顺序变化时，找出移动节点最小的方案
 - vue3 支持 typescript，提供更好的类型判断
 - vue3 模版可以支持多个根节点，但是与单个跟节点有些区别：
   - class、style、v-on 的自动继承上，
@@ -62,6 +70,18 @@
 - 对 typescript 有支持，但较弱
 - api 包含 state，mutation，actions，getters
 
+# vuex 核心概念和工作原理
+
+## 核心概念
+
+- State 单一状态树，存储于应用层级的状态
+- Getter 从 store 中派生出的一些状态（类似计算属性）
+- Mutations 唯一更改 state 的方法（同步事物）
+- Actions 提交 mutation，可以包含任何异步操作
+- Modules 将 store 分割成模块
+
+## 工作原理
+
 # pinia
 
 - 基于 vue3 的 ref 和 reactive，是官方推荐的状态管理
@@ -71,6 +91,11 @@
   - 组件中引入后，可直接使用 state，actions 和 getters，
   - 如需解构 state 和 getters，需要使用 storeToRefs 保持响应性
 - 模块化：基于 esmodule 的模块化，无需像 vuex 一样手动注册
+
+# pinia 为什么去掉了 mutation
+
+vuex 的 mutation 负责处理同步状态变更，并支持 devtools 追踪状态变化。
+但现在的 devtools 可以追踪异步操作，同时 mutation 的严格同步限制与 vue3 的 composition api 理念冲突（鼓励更自由的代码组织方式），所以 mutation 被删除
 
 ## vue3 的 api
 
@@ -113,3 +138,169 @@
   - 在 setup 中，定义暴露出去的属性或方法
 - defineProps
   - 定义组件接收的属性
+
+# vue-router 相关
+
+## history api 有哪些
+
+- history.pushState 添加新的历史记录
+- history.replaceState 替换当前历史记录
+- history.go
+- history.forward
+- history.back
+- history.state 获取当前历史记录关联的状态对象
+- window.onpopstate 触发条件：用户点击浏览器前进后退按钮：back, go, forward
+
+## hash 路由的 api 有哪些
+
+- window.location.hash
+- window.onhashchange
+- history.replaceState 可用于初始化或静默更新 hash
+
+## history 路由和 hash 路由的区别
+
+- history 路由需要服务器支持：url 重定向
+- history 路由没有`#`
+- history 路由支持 state 对象
+- history 路由需要 IE10 以上
+
+## vue-router 中 params 可以不配置在路由配置中吗
+
+可以，但有以下不同：
+
+- 不显示在 url 中
+- 刷新浏览器后，不保留
+- 不是必传的参数
+- 必须使用命名路由
+- 对 seo 不可见
+
+## params 不配置在路由配置中，有什么适用场景？
+
+- 传递敏感数据，不适合暴露在 url 中
+- 传递复杂的数据结构
+- 向导式多步骤表单中，传递表单数据到下一步
+- 传递仅本次导航有效的临时参数
+- 传递开发调试信息
+
+## vue-router 中 params 和 query 的区别
+
+- params 是路径的一部分，query 跟在？后面
+- params 需要在路由配置中预先声明，query 不需要
+- params 一般是必须传的，query 是可选的
+- 刷新后，params 只会保留在路由配置中有的，而 query 一直在
+
+- 函数式导航中，当使用 path 跳转时，params 参数 会被忽略，必须使用 name 跳转才能传递 params
+  ```js
+  // 情况1：使用name + params - 正常工作
+  this.$router.push({
+    name: "user",
+    params: { id: 123 },
+  }); // → /user/123
+  // 情况 2：使用 path + params - params 被忽略
+  this.$router.push({
+    path: "/user",
+    params: { id: 123 }, // 这个 params 会被忽略
+  }); // → /user
+  // 情况 3：使用完整 path - 正常工作
+  this.$router.push({
+    path: "/user/123",
+  }); // → /user/123
+  ```
+
+## vue-router 的 install 方法做了什么？
+
+- 使用 mixin，给所有组件添加 `beforeCreate` 钩子，钩子中做下列事情
+  - 添加`_routerRoot`和`_router`变量
+  - 使用`defineReactive`把当前匹配的路由记录 `current`，变成响应式变量，存储在`_route`上
+- 使用数据拦截，在 vue 原型上获取`$router`和`$route` 时，返回实例的`_routerRoot_routerRoot._router`和`_routerRoot._route`
+- 注册全局组件 `RouterView`和`RouterLink`
+
+## vue-router 中，addRoutes 的原理是什么
+
+vue-router 内部有个路由映射表，在初始化时会把 path 和路由配置映射，存储在 map 中
+addRoutes 方法就是递归的把传入的 routes 放入路由映射表中
+路由映射表结构如下：
+
+```js
+{
+  '/about/a': {
+    parent: {
+      parent:null,path:'/about',component: About
+    },
+    path: '/about/a',
+    component: A
+  }
+}
+```
+
+## vue-router 是如何根据路径渲染对应组件的？
+
+vue-router 中有个 transitionTo 方法，做组件查找和渲染
+
+- 基于路由映射表，可以根据 path 获取到组件链，从根组件到叶子组件，一层一层渲染
+  - path: '/about/a', matched: [About,A]
+- 更新 current，current 保存当前匹配的路由配置
+-
+
+## 组件中可以有多个 router-view 吗
+
+可以，这叫命名视图，路由配置如下：
+
+```js
+[
+  {
+    name: "index",
+    path: "/",
+    components: {
+      default: componentA,
+      b: componentB,
+    },
+  },
+];
+```
+
+router-view 如下：
+
+```html
+<router-view></router-view> <router-view name="b"></router-view>
+```
+
+## router-view 是如何渲染组件的
+
+## 从一个路由，切换到另一个路由的时候，会发生什么？
+
+- 当前组件先离开，调用 beforeRouteLeave
+- 触发全局的 beforeEach 守卫
+- 如果是组件更新，触发 beforeUpdate；如果不是更新，触发 beforeEnter
+- 进入组件后，触发组件的钩子 beforeRouteEnter
+- 切换完毕后，触发全局的 beforeResolve
+- 最后执行全局的 afterEach
+- 触发 dom 更新
+- 调用 beforeRouteEnter 守卫中传给 next 的回调函数，创建好的组件实例会作为回调函数的参数传入
+
+## scrollBehavior 的实现原理及使用方法
+
+在创建 VueRouter 实例时，传入 scrollBehavior 函数选项
+
+```js
+const router = new VueRouter({
+  routes: [],
+  scrollBehavior(to, from, savedPosition) {
+    // 返回滚动位置信息
+    if (savedPosition) {
+      return savedPosition; // 后退时恢复位置
+    }
+    if (to.hash) {
+      return { selector: to.hash }; // 锚点链接
+    }
+    // return { x: 0, y: 0 }; // 默认滚动到顶部
+    return { el: "#main", top: -10 }; //滚动到某个元素位置，top和left视为对这个元素的偏移量
+  },
+});
+```
+
+工作流程如下：
+
+- 路由切换时，先记录页面当前滚动位置，存储在 history.state 中
+- 在全局钩子 afterEach 执行后，执行 scrollBehavior，获取滚动位置
+- 等待 dom 更新之后(nexttick)，再滚动
