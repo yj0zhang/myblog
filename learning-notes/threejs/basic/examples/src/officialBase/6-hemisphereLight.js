@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { ColorGUIHelper } from "./helpers";
+import { ColorGUIHelper } from "../helpers";
 
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
@@ -66,39 +66,18 @@ const scene = new THREE.Scene();
   scene.add(mesh);
 }
 
-const color = 0xffffff;
+const skyColor = 0xb1e1ff;
+const groundColor = 0xb97a20;
 const intensity = 1;
-const light = new THREE.DirectionalLight(color, intensity);
-light.position.set(0, 10, 0);
-light.target.position.set(-5, 0, 0);
+const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
 scene.add(light);
-scene.add(light.target);
-
-const helper = new THREE.DirectionalLightHelper(light);
-scene.add(helper);
 
 {
   //添加GUI
   const gui = new GUI();
   gui.addColor(new ColorGUIHelper(light, "color"), "value").name("color");
+  gui.addColor(new ColorGUIHelper(light, "groundColor"), "value").name("color");
   gui.add(light, "intensity", 0, 5, 0.1);
-  //   gui.add(light.target.position, "x", -10, 10);
-  //   gui.add(light.target.position, "z", -10, 10);
-  //   gui.add(light.target.position, "y", 0, 10);
-  function makeXYZGUI(gui, vector3, name, onChangeFn) {
-    const folder = gui.addFolder(name);
-    folder.add(vector3, "x", -10, 10).onChange(onChangeFn);
-    folder.add(vector3, "y", 0, 10).onChange(onChangeFn);
-    folder.add(vector3, "z", -10, 10).onChange(onChangeFn);
-    folder.open();
-  }
-  function updateLight() {
-    light.target.updateMatrixWorld();
-    helper.update();
-  }
-  updateLight();
-  makeXYZGUI(gui, light.position, "position", updateLight);
-  makeXYZGUI(gui, light.target.position, "target", updateLight);
 }
 
 // 为了让立方体动起来，使用requestAnimationFrame，每一帧旋转一点

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { ColorGUIHelper, DegRadHelper } from "./helpers";
+import { ColorGUIHelper, DegRadHelper } from "../helpers";
 
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });

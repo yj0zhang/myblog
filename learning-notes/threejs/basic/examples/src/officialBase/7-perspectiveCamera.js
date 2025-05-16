@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { ColorGUIHelper, MinMaxGUIHelper } from "./helpers";
+import { ColorGUIHelper, MinMaxGUIHelper } from "../helpers";
 
 const canvas = document.querySelector("#c");
 const view1Elem = document.querySelector("#view1");
@@ -17,21 +17,11 @@ const renderer = new THREE.WebGLRenderer({
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("black");
 
-const left = -1;
-const right = 1;
-const top = 1;
-const bottom = -1;
-const near = 5;
-const far = 50;
-const camera = new THREE.OrthographicCamera(
-  left,
-  right,
-  top,
-  bottom,
-  near,
-  far
-);
-camera.zoom = 0.2;
+const fov = 45, //视野范围
+  aspect = 2, //画布的宽高比
+  near = 0.00001,
+  far = 100; //near、far表示近平面和远平面，在这两个外部的会被裁剪
+const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 camera.position.set(0, 10, 20);
 
 const controls = new OrbitControls(camera, view1Elem);
@@ -138,7 +128,7 @@ scene.add(helper);
   //添加GUI
   const gui = new GUI();
   const cameraFolder = gui.addFolder("camera");
-  cameraFolder.add(camera, "zoom", 0.01, 1, 0.01).listen();
+  cameraFolder.add(camera, "fov", 1, 180);
   const minMaxGUIHelper = new MinMaxGUIHelper(camera, "near", "far", 0.1);
   cameraFolder.add(minMaxGUIHelper, "min", 0.00001, 50, 0.00001).name("near");
   cameraFolder.add(minMaxGUIHelper, "max", 0.1, 50, 0.1).name("far");
@@ -196,8 +186,7 @@ function render(time) {
   {
     //渲染主视野
     const aspect = setScissorForElement(view1Elem);
-    camera.left = -aspect;
-    camera.right = aspect;
+    camera.aspect = aspect;
     camera.updateProjectionMatrix();
     cameraHelper.update();
     //原视野中不绘制cameraHelper

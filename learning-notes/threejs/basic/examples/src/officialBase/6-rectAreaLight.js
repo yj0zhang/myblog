@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { ColorGUIHelper, DegRadHelper } from "./helpers";
+import { ColorGUIHelper, DegRadHelper } from "../helpers";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 

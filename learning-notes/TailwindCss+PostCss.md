@@ -1,6 +1,6 @@
 ## 安装依赖
 
-- npm install tailwindcss postcss autoprefixer postcss-preset-env postcss-pxtorem
+- npm install tailwindcss postcss autoprefixer postcss-preset-env postcss-px-to-viewport postcss-pxtorem
 - npx tailwindcss init
 
 ## 文件基础结构
@@ -27,6 +27,11 @@ module.exports = {
       "Android >= 5",
     ],
   }, //自动添加浏览器前缀
+  /**
+   * postcss-pxtorem和postcss-px-to-viewport都响应式适配方案，区别如下
+   * postcss-pxtorem是转换成rem，需要js动态计算html的字体大小，兼容性更好
+   * postcss-px-to-viewport转换成vw，需要现代浏览器环境
+   */
   "postcss-pxtorem": {
     rootValue: 75, // 750设计稿，1rem=75px
     propList: ["*", "!border*"], // 转换所有属性，除了border相关
@@ -37,6 +42,14 @@ module.exports = {
     minPixelValue: 2, // 小于2px不转换
     exclude: /node_modules/,
   }, // 转换px到rem，html的font-size可以用lib-flexible库管理
+  "postcss-px-to-viewport": {
+    viewportWidth: 750, // 设计稿宽度
+    viewportHeight: 1334, // 设计稿高度
+    unitPrecision: 5, // 转换后保留小数位数
+    viewportUnit: "vw", // 转换单位
+    selectorBlackList: [".ignore"], // 不转换的选择器
+    minPixelValue: 1, // 最小转换像素值
+  },
   "postcss-preset-env": {
     stage: 3, // 使用stage 3+的CSS特性
     features: {

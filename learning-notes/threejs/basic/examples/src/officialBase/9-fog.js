@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { resizeRendererToDisplaySize } from "./2-responsive";
-import { FogGUIHelper } from "./helpers";
+import { FogGUIHelper } from "../helpers";
 
 function main() {
   const canvas = document.querySelector("#c");

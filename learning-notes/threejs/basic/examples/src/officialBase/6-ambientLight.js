@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { ColorGUIHelper } from "./helpers";
+import { ColorGUIHelper } from "../helpers";
 
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
@@ -66,17 +66,15 @@ const scene = new THREE.Scene();
   scene.add(mesh);
 }
 
-const skyColor = 0xb1e1ff;
-const groundColor = 0xb97a20;
+const color = 0xffffff;
 const intensity = 1;
-const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
+const light = new THREE.AmbientLight(color, intensity);
 scene.add(light);
 
 {
   //添加GUI
   const gui = new GUI();
   gui.addColor(new ColorGUIHelper(light, "color"), "value").name("color");
-  gui.addColor(new ColorGUIHelper(light, "groundColor"), "value").name("color");
   gui.add(light, "intensity", 0, 5, 0.1);
 }
 
