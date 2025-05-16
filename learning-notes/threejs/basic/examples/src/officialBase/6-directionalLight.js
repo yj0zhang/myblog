@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
+import { resizeRendererToDisplaySize, resizeHandle } from "../responsive";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { ColorGUIHelper } from "../helpers";

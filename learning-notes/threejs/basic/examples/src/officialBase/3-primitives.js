@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
-import { resizeRendererToDisplaySize } from "./2-responsive";
+import { resizeRendererToDisplaySize } from "../responsive";
 
 function main() {
   const canvas = document.querySelector("#c");

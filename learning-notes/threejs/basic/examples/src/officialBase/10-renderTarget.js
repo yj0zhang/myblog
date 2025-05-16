@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { resizeRendererToDisplaySize } from "./2-responsive";
+import { resizeRendererToDisplaySize } from "../responsive";
 
 function main() {
   const canvas = document.querySelector("#c");

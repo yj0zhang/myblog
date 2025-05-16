@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { resizeRendererToDisplaySize, resizeHandle } from "./2-responsive";
+import { resizeRendererToDisplaySize, resizeHandle } from "../responsive";
 
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
