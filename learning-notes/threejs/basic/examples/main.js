@@ -8,4 +8,6 @@
 // import "./src/officialBase/9-fog";
 // import "./src/officialBase/10-renderTarget";
 // import "./src/lcdm/2/raycaster";
-import "./src/lcdm/2/tweens";
+// import "./src/lcdm/2/tweens";
+// import "./src/lcdm/3/uv";
+import "./src/lcdm/3/normalVector";

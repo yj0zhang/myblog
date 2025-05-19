@@ -1,4 +1,4 @@
-# vue3
+# vue
 
 ## vue3 的响应式原理
 
@@ -63,6 +63,33 @@
 - 性能优化
   - vue3 自动追踪依赖，减少无效渲染
   - react 需要开发时使用 react.memo、userMemo 等方法手动优化
+
+## provide 和 inject 的原理
+
+- provides 原理：
+  - 默认情况下，组件实例会继承其父组件的 provides 对象
+  - 当自己需要提供 provides 时，会创建一个新的 provides 对象，并将父组件的 provides 对象作为原型
+- inject 原理：
+  - 直接从父组件的 provides 中查找需要的 key 值，因为组件树的 provides 创建了原型链，索引会逐级向上查找
+  - 如果没有父组件，或者父组件没有 provides，则查找应用级别的 provides 对象
+  - 如果上述都没有，使用默认值
+
+## mitt useEventBus 的原理
+
+- mitt
+  - 返回 all, on, off, emit, once
+  - 使用发布订阅模式，实现通信
+  - 使用 map 实现事件总线
+  - 事件类型可以传`*`，代表响应所有类型事件
+  - 普通事件函数接收一个参数：事件函数参数，通配符事件接收：事件类型、事件函数参数
+- useEventBus
+  - 返回 on, once, off, emit, reset
+  - 使用发布订阅方式，实现通信
+  - 使用 map 实现事件总线，每个类型的事件存储在 Set 中
+  - 使用了 getCurrentScope，获取当前 scope，并注册清理函数（当作用域销毁时，自动取消监听）
+- 区别
+  - mitt 不依赖 vue，useEventBus 依赖 vue
+  - mitt 需要手动创建 emitter、手动移除监听，useEventBus 会自动处理
 
 # vuex4
 
