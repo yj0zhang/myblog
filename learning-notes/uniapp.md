@@ -59,10 +59,29 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
   // #endif
   ```
 
+## uniapp 的生命周期有哪些
+
+- 应用生命周期：
+  - onLaunch
+  - onShow
+  - onHide
+- 页面生命周期
+  - onLoad
+  - onShow
+  - onReady
+  - onHide
+  - onUnload
+- 组件生命周期
+  - 与 vue 组件生命周期相同
+
 ## uniapp 的路由导航如何实现
 
 - 组件 navigator
-- 接口 uni.navigateTo、uni.reLaunch、uni.redirectTo、uni.switchTab 等
+- 接口
+  - uni.navigateTo 保留当前页面，跳转到新页面
+  - uni.reLaunch 关闭所有页面，打开新页面
+  - uni.redirectTo 关闭当前页面，跳转到新页面
+  - uni.switchTab 跳转到 tabBar 页面
 
 ## uniapp 如何调用原生功能？
 
@@ -140,9 +159,12 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
 
 ## uniapp 的性能优化有哪些
 
+- 开发时注意响应式数据的改动尽量少，或者集中修改，减少底层调用 setData 的次数
+  - 响应式数据的层级尽量不要嵌套很多
 - 使用 scroll-view 分页加载大数据
 - 使用虚拟滚动插件加载大数据
 - 分包加载
+- 避免过深的页面层级
 - 图片
   - 压缩 使用 compressorjs 压缩
   - 使用 webp 格式
@@ -150,3 +172,34 @@ uniapp 是一个基于 vue 的跨平台的前端框架，可以写一套代码�
   - 图片懒加载
     - 使用 lazy-load 属性，<image lazy-load />，仅支持小程序
     - 使用插件 uni-lazy-load 包裹 image
+
+## uniapp 如何管理全局状态
+
+- vuex
+- pinia
+
+## uniapp 如何实现用户登录状态持久化？
+
+- 使用 uni.setStorageSync 存储 token
+- 封装请求拦截器，自动添加 token
+- 在 app.vue 的 onLaunch 中检查登录状态
+
+## uniapp 如何实现下拉刷新和上拉加载
+
+- 在 page.json 中配置页面 enablePullDownRefresh
+- 页面中监听：
+  - 下拉刷新事件 onPullDownRefresh
+  - 上拉加载 onReachBottom
+
+## uniapp 如何调用第三方服务
+
+- 使用官方提供的 api，如 uni.requestPayment
+
+## uniapp 如何请求系统权限
+
+需要使用条件编译，针对不同的平台调用对应的 api，
+
+## uniapp 如何上传下载文件
+
+先检测是否有读取/存储文件的权限
+再上传下载

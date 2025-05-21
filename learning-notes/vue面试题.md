@@ -11,12 +11,13 @@
 
 ## vue2 的响应式原理
 
-- 数据劫持+观察者模式，defineReactive 方法中使用 Object.defineProperty，拦截对象属性的 get 和 set 操作，get 时收集依赖(watcher)，set 时派发更新(执行 watcher)
+- Observer 类，数据劫持，递归监测对象，用 walk 方法，访问对象的每个属性，执行 defineReactive 方法。
+  - defineReactive 方法中使用 Object.defineProperty，拦截对象属性的 get 和 set 操作，get 时收集依赖(watcher)，set 时派发更新(执行 watcher)
   - 这种方式对于引用对象新增的属性无效，所以 vue 暴露出了一个静态 api: $set，新增属性时，使用这个 api，可以实现响应式
   - 数组操作也无法通过数据劫持实现响应式，vue 通过拦截数组原型上的方法实现响应式
-- Dep 类，每个响应式属性对应一个 Dep 实例，管理依赖和派发更新
-- Observer，递归监测对象，用 walk 方法，访问对象的每个属性，触发数据劫持的 get，收集
-- Watcher，相当于 vue3 的 effect，连接视图与数据的桥梁
+- Dep 类，实现观察者模式，每个响应式属性对应一个 Dep 实例，管理依赖和派发更新
+-
+- Watcher 类，相当于 vue3 的 effect，连接视图与数据的桥梁
 
 ## vue2 的 diff 算法
 
@@ -64,6 +65,44 @@
   - vue3 自动追踪依赖，减少无效渲染
   - react 需要开发时使用 react.memo、userMemo 等方法手动优化
 
+## vue 和 react 在性能优化、状态管理、组件通信上有什么区别
+
+### 性能优化
+
+- React 使用 fiber 架构来最小化 DOM 更新操作，但默认情况下，父组件更新会触发所有子组件重新渲染，开发中的优化手段：
+  - React.memo 记忆组件
+  - useMemo/useCallback
+  - shouldComponentUpdate/PureComponent（类组件）
+  - 不可变数据 ？
+  - 代码分割：React.lazy+Suspense 实现按需加载
+- Vue 的响应式系统会自动跟踪哪些组件需要更新，更新范围小。优化手段：
+  - v-once 只渲染一次静态内容
+  - v-memo 记忆模版子树
+  - 组件懒加载：defineAsyncomponent
+  - keep-alive
+- React 的优化特点：更多需要开发者手动干预，但优化粒度更细，可以精确控制
+- Vue 的优化特点：更多有框架内部自己完成，提供了很多内置优化指令
+
+### 状态管理
+
+- React 使用 Redux，单一数据流，注重不可变性和纯函数
+- Vuex 基于 vue2 的响应式，单一数据流，集中管理状态，与 Vue 响应式深度集成
+- Pinia 基于 vue3 的响应式，比 Vuex 更简单直观，与 Vue3 的响应式深度集成
+
+### 组件通信
+
+- React
+  - props 向下传递数据
+  - 回调函数向上传递事件
+  - 状态提升
+  - context api
+  - redux
+- Vue
+  - props 向下传递数据
+  - $emit 触发父组件事件
+  - Provide inject
+  - eventBus
+
 ## provide 和 inject 的原理
 
 - provides 原理：
@@ -90,6 +129,23 @@
 - 区别
   - mitt 不依赖 vue，useEventBus 依赖 vue
   - mitt 需要手动创建 emitter、手动移除监听，useEventBus 会自动处理
+
+## nextTick 原理
+
+基于 vue 的异步更新队列
+
+- 数据变更流程如下
+  - 数据变更（setter）
+  - 将 watcher 加入队列
+  - 使用 flushSchedulerQueue 放入 nextTick
+  - 执行微任务（队列中有 flushSchedulerQueue）
+  - DOM 更新
+  - 执行用户的 nextTick 回调
+  - 宏任务
+- nextTick 首先使用微任务，降级使用宏任务
+  - promise.then
+  - MutationObserver
+  - setTimeout
 
 # vuex4
 
@@ -331,3 +387,154 @@ const router = new VueRouter({
 - 路由切换时，先记录页面当前滚动位置，存储在 history.state 中
 - 在全局钩子 afterEach 执行后，执行 scrollBehavior，获取滚动位置
 - 等待 dom 更新之后(nexttick)，再滚动
+
+# vite
+
+# vitest
+
+## 基本使用
+
+- 安装 `pnpm install -D vitest`
+- 基本配置：
+  ```js
+  import { defineConfig } from "vitest/config";
+  export default defineConfig({
+    test: {
+      // 测试配置项
+      environment: "jsdom", // 或 'happy-dom' 用于 DOM 测试
+      globals: true, // 启用全局 API 如 describe/test/expect
+      coverage: {
+        // 覆盖率配置
+        provider: "c8", // 或 'istanbul'
+        reporter: ["text", "json", "html"],
+      },
+    },
+  });
+  ```
+
+## 基本测试示例
+
+```js
+import { describe, it, expect } from "vitest";
+
+// 测试套件
+describe("math operations", () => {
+  // 测试用例
+  it("should add two numbers", () => {
+    expect(1 + 1).toBe(2);
+  });
+
+  it("should work with async code", async () => {
+    const result = await Promise.resolve(1 + 2);
+    expect(result).toBe(3);
+  });
+});
+```
+
+## 组件测试示例
+
+```js
+import { mount } from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
+import MyComponent from "./MyComponent.vue";
+
+describe("MyComponent", () => {
+  it("renders properly", () => {
+    const wrapper = mount(MyComponent, {
+      props: { msg: "Hello Vitest" },
+    });
+    expect(wrapper.text()).toContain("Hello Vitest");
+  });
+});
+```
+
+## 常用测试功能
+
+### 测试生命周期
+
+```js
+import { beforeAll, beforeEach, afterEach, afterAll } from "vitest";
+
+beforeAll(() => {
+  // 整个测试套件前执行
+});
+
+beforeEach(() => {
+  // 每个测试用例前执行
+});
+
+afterEach(() => {
+  // 每个测试用例后执行
+});
+
+afterAll(() => {
+  // 整个测试套件后执行
+});
+```
+
+# vue3 源码
+
+## 简易响应式
+
+```js
+let activeEffect = null;
+let targetMap = new WeakMap();
+
+function reactive(target) {
+  return new Proxy(target, {
+    get(target, key, receiver) {
+      track(target, key);
+      return Reflect.get(target, key, receiver);
+    },
+    set(target, key, value, receiver) {
+      const oldValue = target[key];
+      const result = Reflect.set(target, key, value, receiver);
+      if (value !== oldValue) {
+        trigger(target, key);
+      }
+      return result;
+    },
+  });
+}
+
+function track(target, key) {
+  if (!activeEffect) {
+    return;
+  }
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    depsMap = new Map();
+    targetMap.set(target, depsMap);
+  }
+  let deps = depsMap.get(key);
+  if (!deps) {
+    deps = new Set();
+    depsMap.set(key, deps);
+  }
+  deps.add(activeEffect);
+}
+
+function trigger(target, key) {
+  const depsMap = targetMap.get(target);
+  if (!depsMap) {
+    return;
+  }
+  const deps = depsMap.get(key);
+  if (deps) {
+    deps.forEach((effect) => {
+      effect();
+    });
+  }
+}
+
+function effect(fn) {
+  activeEffect = fn;
+  fn();
+  activeEffect = null;
+}
+```
+
+# vue 如何仅渲染一次
+
+- v-once
+- Object.freeze ?
