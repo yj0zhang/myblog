@@ -48,6 +48,7 @@
   - suspense，包裹异步加载组件，可以处理 loading、fallback 状态
 - 创建实例方式变了：vue3 变成了 createApp，vue2 是 new Vue
 - v-model 变了，vue3 的组件支持多个 v-model，v-model:title、v-model:content
+- vue3 中 v-for 可以渲染多根节点
 
 ## vue3 和 react 的区别
 
@@ -323,7 +324,6 @@ vue-router 中有个 transitionTo 方法，做组件查找和渲染
 - 基于路由映射表，可以根据 path 获取到组件链，从根组件到叶子组件，一层一层渲染
   - path: '/about/a', matched: [About,A]
 - 更新 current，current 保存当前匹配的路由配置
--
 
 ## 组件中可以有多个 router-view 吗
 
@@ -534,7 +534,26 @@ function effect(fn) {
 }
 ```
 
-# vue 如何仅渲染一次
+# vue 的性能优化手段有哪些
 
-- v-once
-- Object.freeze ?
+- v-once 只渲染一次，永远不会更新
+- v-memo 由于记住模版子树，依赖变化时才重新渲染，类似 react 的 useMemo，但是作用域模版
+  - 可以与 v-for 一起使用
+    ```js
+    <div v-for="item in list" :key="item.id" v-memo="[item.value]">
+      {{ item.text }}
+    </div>
+    ```
+- keep-alive
+- shallowRef/shallowReactive
+- markRaw
+- computed
+- 组件懒加载
+  - vue3 中 defineAsyncComponent
+  - vue2 使用 import()动态加载
+
+# v-for 和 v-if 的优先级
+
+- Vue 2：v-for > v-if
+- Vue 3：v-if > v-for
+  最佳实践是不同时使用，而是用 computed 替代

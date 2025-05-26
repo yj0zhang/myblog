@@ -9,6 +9,9 @@
 - class
 - module
 - Map/Set/WeakMap/WeakSet
+  - Map 的键有顺序、键可以是任意值、Map 可以直接被迭代、频繁增删时性能更好、可以直接获取 size
+  - Set 中的值会自动去重、元素按插入顺序排列、只能迭代访问（不能按索引）、查找(has)/删除(delete)元素更快
+    - Array 是按照索引顺序，可以按索引访问
 - Promise
 - 迭代器与生成器 iterator yield
 - Proxy/Reflect
