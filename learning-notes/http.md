@@ -72,3 +72,11 @@
   - 更精确
   - 但是消耗服务器资源
   - 优先级比 Last-Modified 高
+
+# get 和 post 的区别
+
+- get 安全性较低，post 相对较高（但仍需 https 加密）
+- get 参数在 query 中且有长度限制；post 参数在 body 中，理论上无限制
+- get 可以被缓存，post 不行
+- get 一般用来获取数据，post 用来更新数据
+- get 可能被浏览器预加载
