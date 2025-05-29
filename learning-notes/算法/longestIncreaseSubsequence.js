@@ -46,12 +46,12 @@ function LIS(arr) {
 
   return maxLength; // 返回 dp 数组中的最大值，即最长严格上升子序列的长度
 }
-LIS([10, 9, 2, 5, 3, 7, 101, 18]); // 输出4
-LIS([1, 3, 6, 7, 9, 4, 10, 5, 6]); // 输出6
-LIS([3, 2]); // 输出1
-LIS([1, 2, 3, 4, 5]); // 输出5
-LIS([5, 4, 3, 2, 1]); // 输出1
-LIS([10, 12, 22, 8, 9]); // 输出3
+// LIS([10, 9, 2, 5, 3, 7, 101, 18]); // 输出4
+// LIS([1, 3, 6, 7, 9, 4, 10, 5, 6]); // 输出6
+// LIS([3, 2]); // 输出1
+// LIS([1, 2, 3, 4, 5]); // 输出5
+// LIS([5, 4, 3, 2, 1]); // 输出1
+// LIS([10, 12, 22, 8, 9]); // 输出3
 
 /**
  * 最长严格上升子序列问题。
@@ -101,3 +101,61 @@ function LISGreedy(arr) {
 }
 // LISGreedy([10, 9, 2, 5, 3, 7, 101, 18]); // 输出4
 // LISGreedy([1, 3, 6, 7, 9, 4, 10, 5, 6]); // 输出6
+
+/**
+ * 获取最长严格上升子序列（LIS）
+ * 使用贪心算法和二分查找的结合。
+ * 该方法不仅返回最长严格上升子序列的长度，还返回实际的子序列。
+ * 题目描述：
+ * 给定一个整数数组，求其中最长严格上升子序列。
+ * 严格上升子序列是指子序列中的元素严格递增。
+ * 例如，给定数组 [10, 9, 2, 5, 3, 7, 101, 18]，最长严格上升子序列为 [2, 3, 7, 101]。
+ * 该问题可以使用贪心算法和二分查找的结合来解决。
+ * 贪心算法思路：
+ * 1. 初始化一个空数组 tails，用于存储当前找到的最长严格上升子序列的末尾元素索引。
+ * 2. 初始化一个 parents 数组，用于存储每个元素在 LIS 中的前一个元素索引。
+ * 3. 遍历数组，对于每个元素 arr[i]，使用二分查找在 tails 中找到第一个大于等于 arr[i] 的位置 pos。
+ *    如果 pos 等于 tails 的长度，说明 arr[i] 可以添加到 tails 的末尾，更新 tails 和 parents。
+ *    如果 pos 小于 tails 的长度，说明 arr[i] 可以替换 tails[pos]，以保持 tails 的最小值，并更新 parents。
+ * 4. 最终，通过 parents 数组可以 reconstruct 出最长严格上升子序列。
+ * 5. 时间复杂度为 O(n log n)，空间复杂度为 O(n)。
+ * 给定数组的最长严格上升子序列。
+ * @param {*} arr
+ * @returns
+ */
+function getLISGreedy(arr) {
+  if (arr.length === 0) {
+    return []; // 如果数组为空，返回空数组
+  }
+  const tails = []; // 用于存储当前找到的LIS的末尾元素索引
+  const parents = new Array(arr.length).fill(-1); //用于存储每一个元素在LIS中的前一个元素索引
+  for (let i = 0; i < arr.length; i++) {
+    let left = 0;
+    let right = arr.length;
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      if (arr[tails[mid]] < arr[i]) {
+        left = mid + 1; // 寻找第一个大于等于 arr[i] 的位置
+      } else {
+        right = mid; // 寻找第一个大于等于 arr[i] 的位置
+      }
+    }
+    parents[i] = left > 0 ? tails[left - 1] : -1; // 设置前一个元素索引
+    if (left === tails.length) {
+      tails.push(i); // 如果 pos 等于 tails 的长度，说明 tails 所有元素都小于arr[i], arr[i] 可以添加到 tails 的末尾
+    } else {
+      tails[left] = i; // 否则替换 tails[pos]
+    }
+  }
+  // 重建最长严格上升子序列
+  const lis = [];
+  let k = tails[tails.length - 1]; // 获取最后一个元素的索引
+  while (k !== -1) {
+    lis.unshift(arr[k]); // 将元素添加到 lis 中
+    k = parents[k]; // 更新 k 为前一个元素的索引
+  }
+  return lis; // 返回 lis，即最长严格上升子序列
+}
+console.log(getLISGreedy([10, 9, 2, 5, 3, 7, 101, 18])); // 输出 [2, 3, 7, 101] 或 [2, 3, 7, 18]
+console.log(getLISGreedy([1, 3, 6, 7, 9, 4, 10, 5, 6])); // 输出 [ 1, 3, 6, 7, 9, 10 ]
+console.log(getLISGreedy([3, 2])); // 输出 [3] 或 [2]
