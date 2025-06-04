@@ -10,4 +10,7 @@
 // import "./src/lcdm/2/raycaster";
 // import "./src/lcdm/2/tweens";
 // import "./src/lcdm/3/uv";
-import "./src/lcdm/3/normalVector";
+// import "./src/lcdm/3/normalVector";
+// import "./src/lcdm/3/boundingBox";
+// import "./src/lcdm/3/multiBoundingBox";
+import "./src/lcdm/3/edgesGeometry";
