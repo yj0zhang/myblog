@@ -366,3 +366,46 @@ export default defineConfig({
 - 开发时，直接访问模块的 index.html: `http://localhost:5173/src/modules/home/index.html`
   - 或者使用插件`vite-plugin-html`动态生成 html
 - 公共资源放在`public/shared-assets`下，通过绝对路径访问，比如`/shared-assets/logo.png`
+
+# vite 性能优化的手段
+
+## 生产构建优化
+
+- 代码分割
+  - 动态导入，使用`import()`语法按需加载模块
+  - 配置 rollup 分割策略
+  ```js
+  {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['vue','lodash'],
+            utils: ['src/utils/*']
+          }
+        }
+      }
+    }
+  }
+  ```
+- 依赖预构建优化
+  - 排除不需要的依赖：`optimizeDeps.exclude = []`
+- 使用 esbuild 压缩：`build.minify = 'esbuild'`
+- 静态资源优化
+
+  - 图片，使用插件`vite-plugin-imagemin`：`plugins: [viteImagemin({gifsicle:{optimizationLevel: 3}})]`
+  - 小文件转 base64：`build.assetsInlineLimit = 4096`
+
+- cdn 加速第三方依赖
+  - 使用 vite-plugin-cdn-import 将 vue、axios 等库替换为 cdn 链接：`plugins: [viteCDNPlugin({ modules: [{ name: 'vue', var: 'Vue',path: 'https://cdn.jsdelivr.net/npm/vue@3' }] })]`
+
+## 开发模式优化
+
+- 减少模块扫描：通过`optimizeDeps.include`预声明依赖，避免冷启动时频繁扫描
+- 禁用 sourcemap
+- 预渲染，对静态页面使用`vite-plugin-prerenderer`提前生成 html
+
+## 运行时性能
+
+- 异步组件
+- 虚拟滚动
