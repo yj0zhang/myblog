@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --bg-color: #ffffff;
+        --text-color: #333333;
+    }
+
+    /**暗色主题，覆盖默认主题 */
+    [data-theme="dark"] {
+        --primary-color: #9b59b6;
+        --secondary-color: #1abc9c;
+        --bg-color: #222222;
+        --text-color: #ffffff;
+    }
+
+    .header {
+        color: var(--text-color);
+    }
+
+    div {
+        background-color: var(--primary-color);
+    }
+</style>
+
+<body>
+    <button onclick="changeToDark()">切换到暗色主题</button>
+    <button onclick="changeToDefault()">切换到默认主题</button>
+    <div>
+        <div class="header">this is header</div>
+    </div>
+    <script>
+        function changeToDark() {
+            console.log('dark')
+            //切换到暗色主题
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+        function changeToDefault() {
+            console.log('default')
+            //切换到暗色主题
+            document.documentElement.removeAttribute("data-theme");
+        }
+    </script>
+</body>
+
+</html>

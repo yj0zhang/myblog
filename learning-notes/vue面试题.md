@@ -16,7 +16,6 @@
   - 这种方式对于引用对象新增的属性无效，所以 vue 暴露出了一个静态 api: $set，新增属性时，使用这个 api，可以实现响应式
   - 数组操作也无法通过数据劫持实现响应式，vue 通过拦截数组原型上的方法实现响应式
 - Dep 类，实现观察者模式，每个响应式属性对应一个 Dep 实例，管理依赖和派发更新
--
 - Watcher 类，相当于 vue3 的 effect，连接视图与数据的桥梁
 
 ## vue2 的 diff 算法
@@ -117,12 +116,12 @@
 ## mitt useEventBus 的原理
 
 - mitt
-  - 返回 all, on, off, emit, once
+  - 返回 all, on, once, off, emit
   - 使用发布订阅模式，实现通信
   - 使用 map 实现事件总线
   - 事件类型可以传`*`，代表响应所有类型事件
   - 普通事件函数接收一个参数：事件函数参数，通配符事件接收：事件类型、事件函数参数
-- useEventBus
+- useEventBus (VueUse 提供的)
   - 返回 on, once, off, emit, reset
   - 使用发布订阅方式，实现通信
   - 使用 map 实现事件总线，每个类型的事件存储在 Set 中
@@ -210,7 +209,14 @@ vuex 的 mutation 负责处理同步状态变更，并支持 devtools 追踪状�
 - effect
 - computed
 - watch
+  - watch(source, cb, options)
 - watchEffect
+  - watchEffect(effect,options)
+  - 返回一个 stop 方法，用于停止侦听
+- watchPostEffect
+  - watchEffect() 使用 flush: 'post' 选项时的别名
+- watchSyncEffect
+  - watchEffect() 使用 flush: 'sync' 选项时的别名
 - onWatcherCleanup、onCleanup
   - onWatherCleanup 是全局 api，可以直接调用，注册清理方法
   - onCleanup 是一个回调，在 watch 的监听方法中传入，注册清理方法
@@ -557,3 +563,16 @@ function effect(fn) {
 - Vue 2：v-for > v-if
 - Vue 3：v-if > v-for
   最佳实践是不同时使用，而是用 computed 替代
+
+# vue3 的组合式 api 有很多优秀的工具库，你用过哪些？
+
+- VueUse
+  - useAxios，axios+vue 封装
+  - useLocalStorage
+  - useAnimate
+  - useTimeoutFn
+  - useIntervalFn
+  - useMouse
+  - watchDebounced
+  - watchOnce
+  - refDebounced

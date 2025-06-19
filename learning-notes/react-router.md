@@ -21,11 +21,11 @@ react-router 是 react 应用中实现客户端路由的库，作用是保持 UI
     state: { date }, //传递状态
   });
   ```
+- 新增 useSearchParams
 - 路由嵌套语法变化
   - 子路由嵌套语法更直观，父路由组件中使用 Outlet 渲染子路由
 - 相对路径和链接
   - 子路由路径自动相对于父路由
-- 新增 useSearchParams
 - useParams 更严格，未匹配的参数回返回 undefined 而不是空对象
 - Redirect 组件替换为 Navigate 组件
 
