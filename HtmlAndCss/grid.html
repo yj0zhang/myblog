@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container {
+        display: grid;
+        grid-template-areas:
+            "header header header header"
+            "sidebar main main main"
+            "footer footer footer footer";
+        grid-template-rows: auto 1fr auto;
+        min-height: 100vh;
+    }
+
+    header {
+        grid-area: header;
+    }
+
+    aside {
+        grid-area: sidebar;
+    }
+
+    main {
+        grid-area: main;
+    }
+
+    footer {
+        grid-area: footer;
+    }
+
+    .container * {
+        border: 1px solid red;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <header>Header</header>
+        <aside>Sidebar</aside>
+        <main>Main Content</main>
+        <footer>Footer</footer>
+    </div>
+</body>
+
+</html>
